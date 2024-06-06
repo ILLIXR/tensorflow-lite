@@ -1,0 +1,13 @@
+diff --git a/include/cudnn_frontend.h b/include/cudnn_frontend.h
+index 0f0d5a6..802bcbb 100644
+--- a/include/cudnn_frontend.h
++++ b/include/cudnn_frontend.h
+@@ -97,7 +97,7 @@
+  *      - Simpler samples on how to use the new API.
+  */
+ 
+-#include <cudnn.h>
++#include "third_party/gpus/cudnn/cudnn.h"
+ 
+ #include "cudnn_frontend_ConvDesc.h"
+ #include "cudnn_frontend_Heuristics.h"

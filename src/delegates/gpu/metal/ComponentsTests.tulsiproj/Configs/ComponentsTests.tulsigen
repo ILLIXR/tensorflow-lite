@@ -1,0 +1,14 @@
+{
+  "sourceFilters" : [
+    /delegates/gpu/...",
+  ],
+  "buildTargets" : [
+    "//tensorflow/lite/delegates/gpu/metal:ComponentsTests",
+  ],
+  "projectName" : "ComponentsTests",
+  "additionalFilePaths" : [
+    /delegates/gpu/BUILD",
+    /delegates/gpu/metal/BUILD",
+    /delegates/gpu/metal/kernels/BUILD",
+  ]
+}
