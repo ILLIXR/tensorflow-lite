@@ -43,6 +43,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(TENSORFLOW_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE PATH
   "Directory that contains the TensorFlow project"
 )
+set(TENSORFLOW_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
 set(TSL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/third_party/tsl")
 set(XLA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/")
 set(TFLITE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
@@ -407,7 +408,7 @@ if(TFLITE_ENABLE_GPU)
     target_include_directories(metal_delegate PUBLIC
       ${CMAKE_BINARY_DIR}/abseil-cpp
       ${CMAKE_BINARY_DIR}/flatbuffers/include
-      PRIVATE ${TENSORFLOW_SOURCE_DIR}
+      PRIVATE ${TENSORFLOW_SOURCE_DIR} ${TENSORFLOW_ROOT_DIR}
     )
     #
     # generate flatbuffers header for inference_context
@@ -421,6 +422,7 @@ if(TFLITE_ENABLE_GPU)
         OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/metal/inference_context_generated.h
         COMMAND ${FLATC} --scoped-enums
         -I ${TENSORFLOW_SOURCE_DIR}
+        -I ${TENSORFLOW_ROOT_DIR}
         -o ${TFLITE_SOURCE_DIR}/delegates/gpu/metal
         -c ${TFLITE_SOURCE_DIR}/delegates/gpu/metal/inference_context.fbs
     )
@@ -647,7 +649,8 @@ target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
 target_include_directories(tensorflow-lite
-  PUBLIC $<BUILD_INTERFACE:${TENSORFLOW_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                           PUBLIC $<BUILD_INTERFACE:${TENSORFLOW_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                           PRIVATE ${TENSORFLOW_ROOT_DIR}
 )
 target_link_libraries(tensorflow-lite
   PUBLIC
@@ -749,6 +752,8 @@ set_target_properties(_pywrap_tensorflow_interpreter_wrapper PROPERTIES PREFIX "
 target_include_directories(_pywrap_tensorflow_interpreter_wrapper
   PUBLIC
     ${TENSORFLOW_SOURCE_DIR}
+                           PRIVATE
+                           ${TENSORFLOW_ROOT_DIR}
 )
 
 target_link_libraries(_pywrap_tensorflow_interpreter_wrapper
