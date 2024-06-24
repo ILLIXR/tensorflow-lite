@@ -165,7 +165,7 @@ if(SYSTEM_PTHREADPOOL)
 elseif(NOT DEFINED PTHREADPOOL_SOURCE_DIR)
     message(STATUS "Downloading pthreadpool to ${CMAKE_BINARY_DIR}/pthreadpool-source (define SYSTEM_PTHREADPOOL or PTHREADPOOL_SOURCE_DIR to avoid it)")
     configure_file(src/cmake/DownloadPThreadPool.cmake "${CMAKE_BINARY_DIR}/pthreadpool-download/CMakeLists.txt")
-    execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -G "${CMAKE_GENERATOR}" .
+    execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -G "${CMAKE_GENERATOR}" -DPTHREADPOOL_LIBRARY_TYPE=shared .
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pthreadpool-download")
     execute_process(COMMAND "${CMAKE_COMMAND}" --build .
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pthreadpool-download")
@@ -309,6 +309,10 @@ if(TFLITE_ENABLE_GPU)
     FILTER "(_test)\\.(cc|h)$"
   )
   populate_tflite_source_vars(
+          "delegates/gpu/common/google" TFLITE_DELEGATES_GPU_COMMON_GOOGLE_SRC
+          FILTER "(_test)\\.(cc|h)$"
+  )
+  populate_tflite_source_vars(
     "delegates/gpu/common/mediapipe" TFLITE_DELEGATES_GPU_COMMON_MEDIAPIPE_SRCS
     FILTER "(_test)\\.(cc|h)$"
     )
@@ -326,7 +330,7 @@ if(TFLITE_ENABLE_GPU)
     FILTER "(_test)\\.(cc|h)$"
   )
   populate_tflite_source_vars(
-    "delegates/gpu/common/selectors/default/mediapipe" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_MEDIAPIPE_SRCS
+    "delegates/gpu/common/selectors/mediapipe" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS
     FILTER "(_test)\\.(cc|h)$"
   )
   populate_tflite_source_vars(
@@ -358,6 +362,11 @@ if(TFLITE_ENABLE_GPU)
     TFLITE_DELEGATES_GPU_COMMON_TRANSFORMATIONS_SRCS
     FILTER "(_test)\\.(cc|h)$"
   )
+  populate_tflite_source_vars(
+          "delegates/gpu/gl/kernels/mediapipe"
+          TFLITE_DELEGATES_GPU_GL_KERNELS_MEDIAPIPE_SRC
+          FILTER "(_test)\\(.cc|h)$"
+  )
   list(APPEND TFLITE_DELEGATES_GPU_SRCS
     ${TFLITE_SOURCE_DIR}/delegates/gpu/api.cc
     ${TFLITE_SOURCE_DIR}/delegates/gpu/delegate.cc
@@ -367,17 +376,19 @@ if(TFLITE_ENABLE_GPU)
     ${TFLITE_DELEGATES_GPU_CL_SRCS}
     ${TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS}
     ${TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS}
+    ${TFLITE_DELEGATES_GPU_COMMON_GOOGLE_SRC}
     ${TFLITE_DELEGATES_GPU_COMMON_MEDIAPIPE_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_MEMORY_MANAGEMENT_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_SRCS}
-    ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_MEDIAPIPE_SRCS}
+    ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_TASK_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_TASKS_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPE_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS}
     ${TFLITE_DELEGATES_GPU_COMMON_TRANSFORMATIONS_SRCS}
+    ${TFLITE_DELEGATES_GPU_GL_KERNELS_MEDIAPIPE_SRC}
     ${TFLITE_SOURCE_DIR}/tools/versioning/gpu_compatibility.cc
     ${TFLITE_SOURCE_DIR}/tools/versioning/op_signature.cc
   )
@@ -511,7 +522,7 @@ if(TFLITE_ENABLE_XNNPACK)
        XNNPACKLIB
   )
   set_property(TARGET XNNPACKLIB PROPERTY
-               IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libXNNPACK.so")
+               IMPORTED_LOCATION "${xnnpack_BINARY_DIR}/libXNNPACK.so")
   list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DTFLITE_BUILD_WITH_XNNPACK_DELEGATE")
   list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DXNNPACK_DELEGATE_ENABLE_QS8")
   list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DXNNPACK_DELEGATE_ENABLE_QU8")
@@ -574,6 +585,9 @@ populate_tflite_source_vars("kernels/internal/optimized/4bit"
   TFLITE_KERNEL_INTERNAL_OPT_4BIT_SRCS
   FILTER "(.*neon.*|.*sse.*)\\.(cc|h)"
 )
+populate_tflite_source_vars("kernels/internal/utils"
+                            TFLITE_KERNEL_INTERNAL_UTILS_SRCS
+)
 set(TFLITE_PROFILER_SRCS
   ${TFLITE_SOURCE_DIR}/profiling/platform_profiler.cc
   ${TFLITE_SOURCE_DIR}/profiling/root_profiler.h
@@ -631,6 +645,7 @@ set(_ALL_TFLITE_SRCS
     ${TFLITE_KERNEL_INTERNAL_REF_SPARSE_OPS_SRCS}
     ${TFLITE_KERNEL_INTERNAL_REF_SRCS}
     ${TFLITE_KERNEL_INTERNAL_SRCS}
+    ${TFLITE_KERNEL_INTERNAL_UTILS_SRCS}
     ${TFLITE_KERNEL_SRCS}
     ${TFLITE_NNAPI_SRCS}
     ${TFLITE_SRCS}
@@ -698,6 +713,8 @@ if(TFLITE_ENABLE_INSTALL)
   foreach(hdr ${_ALL_TFLITE_HDRS})
     get_filename_component(dir ${hdr} DIRECTORY)
     file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
+
+    string(REPLACE "src/" "" dir ${dir})
     install(
       FILES ${hdr}
       DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/tensorflow/lite/${dir}"
