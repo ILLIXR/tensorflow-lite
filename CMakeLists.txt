@@ -62,9 +62,6 @@ set(CMAKE_PREFIX_PATH
 include(GNUInstallDirs)
 include(CMakeDependentOption)
 option(TFLITE_ENABLE_INSTALL "Enable install rule" OFF)
-if(TFLITE_ENABLE_INSTALL)
-  set(RUY_ENABLE_INSTALL ON)
-endif()
 option(TFLITE_ENABLE_LABEL_IMAGE "Enable label_image example" OFF)
 option(TFLITE_ENABLE_RUY "Enable experimental RUY integration" OFF)
 option(TFLITE_ENABLE_RESOURCE "Enable experimental support for resources" ON)
@@ -155,6 +152,7 @@ endif()
 find_package(cpuinfo REQUIRED)  #CPUINFO is used by XNNPACK and RUY library
 find_package(ml_dtypes REQUIRED)
 find_package(ruy REQUIRED)
+find_package(ruy REQUIRED CONFIG)
 # Include TSL, which is in tensorflow/third_party
 include_directories(
   ${TSL_SOURCE_DIR}
