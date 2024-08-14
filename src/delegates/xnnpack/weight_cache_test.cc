@@ -31,7 +31,7 @@ limitations under the License.
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "flatbuffers/verifier.h"  // from @flatbuffers
 #include "c/common.h"
 #include "delegates/xnnpack/weight_cache_schema_generated.h"

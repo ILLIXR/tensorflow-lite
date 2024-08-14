@@ -47,7 +47,7 @@ limitations under the License.
 #include "kernels/kernel_util.h"
 
 #ifdef TFLITE_KERNEL_USE_XNNPACK
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "logger.h"
 #include "minimal_logging.h"
 #include "pthreadpool.h"  // from @pthreadpool

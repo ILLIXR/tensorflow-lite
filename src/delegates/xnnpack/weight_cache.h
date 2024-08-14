@@ -22,7 +22,7 @@ limitations under the License.
 #include <unordered_map>
 #include <vector>
 
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "c/common.h"
 #include "delegates/xnnpack/weight_cache_schema_generated.h"
 

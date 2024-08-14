@@ -32,7 +32,7 @@ limitations under the License.
 #include <vector>
 
 #include "experiments-config.h"  // from @XNNPACK
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "builtin_ops.h"
 #include "c/c_api_types.h"
 #include "core/api/profiler.h"

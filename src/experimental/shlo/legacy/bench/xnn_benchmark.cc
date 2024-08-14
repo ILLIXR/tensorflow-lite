@@ -19,7 +19,7 @@ limitations under the License.
 #include <limits>
 #include <vector>
 
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "absl/log/log.h"
 #include "benchmark/benchmark.h"  // from @com_google_benchmark
 #include "experimental/shlo/legacy/bench/util.h"

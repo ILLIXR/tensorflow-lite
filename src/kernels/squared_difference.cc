@@ -32,7 +32,7 @@ limitations under the License.
 #include <array>
 #include <limits>
 
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "kernels/cpu_backend_context.h"
 #include "minimal_logging.h"
 #endif  // TFLITE_KERNEL_USE_XNNPACK

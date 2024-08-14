@@ -32,7 +32,7 @@ limitations under the License.
 #include "kernels/op_macros.h"
 
 #ifdef TFLITE_KERNEL_USE_XNNPACK
-#include "xnnpack.h"  // from @XNNPACK
+#include "tfl-xnnpack.h"  // from @XNNPACK
 #include "kernels/cpu_backend_context.h"
 #include "logger.h"
 #include "minimal_logging.h"
