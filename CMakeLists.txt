@@ -140,7 +140,7 @@ find_package(absl REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(farmhash REQUIRED)
 find_package(fft2d REQUIRED)
-find_package(FlatBuffers REQUIRED)
+find_package(fft2d REQUIRED CONFIG)
 find_package(gemmlowp REQUIRED)
 if (NOT CMAKE_SYSTEM_PROCESSOR OR CMAKE_SYSTEM_PROCESSOR MATCHES "x86")
   find_package(NEON_2_SSE REQUIRED)
@@ -661,6 +661,7 @@ add_library(tensorflow-lite
   ${_ALL_TFLITE_SRCS}
 )
 target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
+#target_include_directories(tensorflow-lite PUBLIC ${fft2d_INCLUDE_DIRS})
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
 target_include_directories(tensorflow-lite
@@ -677,7 +678,7 @@ target_link_libraries(tensorflow-lite
     absl::synchronization
     absl::variant
     farmhash
-    fft2d_fftsg2d
+                      fft2d::fft2d_fftsg2d
     flatbuffers::flatbuffers
     gemmlowp::gemmlowp
     ml_dtypes
