@@ -75,6 +75,7 @@ option(TFLITE_ENABLE_XNNPACK "Enable XNNPACK backend" ON)
 option(TFLITE_ENABLE_EXTERNAL_DELEGATE "Enable External Delegate backend" ON)
 
 option(TFLITE_KERNEL_TEST "Enable tflite kernel unit test" OFF)
+option(BUILD_SHARED_LIBS "Build a shared library instead of a static one" OFF)
 if(TFLITE_KERNEL_TEST AND ${CMAKE_CROSSCOMPILING})
   set(TFLITE_HOST_TOOLS_DIR "" CACHE PATH "Host tools directory")
   if(TFLITE_HOST_TOOLS_DIR STREQUAL "")
@@ -661,9 +662,16 @@ set(_ALL_TFLITE_SRCS
     ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema_generated.h
     ${TFLITE_SOURCE_DIR}/schema/schema_generated.h
 )
-add_library(tensorflow-lite
+if(BUILD_SHARED_LIBS)
+    add_library(tensorflow-lite SHARED
   ${_ALL_TFLITE_SRCS}
 )
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+else()
+    add_library(tensorflow-lite STATIC
+                ${_ALL_TFLITE_SRCS}
+    )
+endif()
 target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
 #target_include_directories(tensorflow-lite PUBLIC ${fft2d_INCLUDE_DIRS})
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
