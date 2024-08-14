@@ -145,7 +145,7 @@ add_compile_definitions(EIGEN_MPL2_ONLY)
 
 find_package(farmhash REQUIRED CONFIG)
 find_package(fft2d REQUIRED CONFIG)
-find_package(gemmlowp REQUIRED)
+find_package(flatbuffers REQUIRED CONFIG)
 if (NOT CMAKE_SYSTEM_PROCESSOR OR CMAKE_SYSTEM_PROCESSOR MATCHES "x86")
     find_package(NEON_2_SSE REQUIRED CONFIG)
   list(APPEND TFLITE_TARGET_DEPENDENCIES NEON_2_SSE::NEON_2_SSE)
@@ -394,10 +394,10 @@ if(TFLITE_ENABLE_GPU)
       ${TFLITE_DELEGATES_METAL_SRCS}
     )
     target_include_directories(metal_delegate PUBLIC
-      ${CMAKE_BINARY_DIR}/flatbuffers/include
       PRIVATE ${TENSORFLOW_SOURCE_DIR} ${TENSORFLOW_ROOT_DIR}
     )
         target_link_libraries(metal_delegate PUBLIC
+                              flatbuffers::flatbuffers
                               absl::status
                               absl::strings
                               absl::flat_hash_map
@@ -441,11 +441,9 @@ if(TFLITE_ENABLE_GPU)
    foreach(lib_name ${CC_SRCS})
      set_source_files_properties(${METAL_DELEGATE_PATH}${lib_name}.cc  PROPERTIES LANGUAGE OBJCXX)
      add_library("${lib_name}" STATIC ${METAL_DELEGATE_PATH}${lib_name}.cc)
-     target_include_directories("${lib_name}" PUBLIC
-       ${CMAKE_BINARY_DIR}/flatbuffers/include
-     )
      set_target_properties(${lib_name} PROPERTIES LINKER_LANGUAGE OBJCXX)
             target_link_libraries(${lib_name} PUBLIC
+                                  flatbuffers::flatbuffers
                                   absl::status
                                   absl::strings
                                   absl::flat_hash_map
@@ -461,7 +459,7 @@ if(TFLITE_ENABLE_GPU)
    foreach(lib_name ${MM_SRCS})
      add_library("${lib_name}" STATIC ${METAL_DELEGATE_PATH}${lib_name}.mm)
             target_link_libraries(${lib_name} PUBLIC
-       ${CMAKE_BINARY_DIR}/abseil-cpp
+                                  flatbuffers::flatbuffers
                                   absl::status
                                   absl::strings
                                   absl::flat_hash_map
