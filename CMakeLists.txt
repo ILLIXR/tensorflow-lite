@@ -26,9 +26,13 @@
 # - Many features in experimental
 # - Host Tools (i.e conversion / analysis tools etc.)
 
+# This build has been modified to remove the building of third party code to another module
+# for inclusion in ILLIXR. This was done to alleviate the issue of naming conflicts within
+# components.
+
 cmake_minimum_required(VERSION 3.16)
 if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "Setting build type to Release, for debug builds use"
+    message(STATUS "Setting build type to Release, for debug builds use"
     "'-DCMAKE_BUILD_TYPE=Debug'.")
   set(CMAKE_BUILD_TYPE "Release")
 endif()
@@ -138,8 +142,9 @@ set(TFLITE_TARGET_DEPENDENCIES "")
 # Find TensorFlow Lite dependencies.
 find_package(absl REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(farmhash REQUIRED)
+find_package(Eigen3 REQUIRED CONFIG)
 find_package(fft2d REQUIRED)
+find_package(farmhash REQUIRED CONFIG)
 find_package(fft2d REQUIRED CONFIG)
 find_package(gemmlowp REQUIRED)
 if (NOT CMAKE_SYSTEM_PROCESSOR OR CMAKE_SYSTEM_PROCESSOR MATCHES "x86")
@@ -677,7 +682,7 @@ target_link_libraries(tensorflow-lite
     absl::strings
     absl::synchronization
     absl::variant
-    farmhash
+                      farmhash::farmhash
                       fft2d::fft2d_fftsg2d
     flatbuffers::flatbuffers
     gemmlowp::gemmlowp
