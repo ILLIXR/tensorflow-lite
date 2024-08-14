@@ -141,9 +141,10 @@ set(OVERRIDABLE_FETCH_CONTENT_LICENSE_CHECK ON)
 set(TFLITE_TARGET_DEPENDENCIES "")
 # Find TensorFlow Lite dependencies.
 find_package(absl REQUIRED)
-find_package(Eigen3 REQUIRED)
+
 find_package(Eigen3 REQUIRED CONFIG)
-find_package(fft2d REQUIRED)
+add_compile_definitions(EIGEN_MPL2_ONLY)
+
 find_package(farmhash REQUIRED CONFIG)
 find_package(fft2d REQUIRED CONFIG)
 find_package(gemmlowp REQUIRED)
