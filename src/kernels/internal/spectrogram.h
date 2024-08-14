@@ -35,7 +35,7 @@ limitations under the License.
 #include <deque>
 #include <vector>
 
-#include "third_party/fft2d/fft.h"
+#include <fft.h>
 
 namespace tflite {
 namespace internal {

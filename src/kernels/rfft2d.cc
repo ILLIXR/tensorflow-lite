@@ -21,7 +21,7 @@ limitations under the License.
 #include <algorithm>
 #include <complex>
 
-#include "third_party/fft2d/fft2d.h"
+#include <fft2d.h>
 #include "ruy/profiler/instrumentation.h"  // from @ruy
 #include "core/c/common.h"
 #include "kernels/internal/tensor.h"
