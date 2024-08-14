@@ -149,7 +149,7 @@ find_package(farmhash REQUIRED CONFIG)
 find_package(fft2d REQUIRED CONFIG)
 find_package(gemmlowp REQUIRED)
 if (NOT CMAKE_SYSTEM_PROCESSOR OR CMAKE_SYSTEM_PROCESSOR MATCHES "x86")
-  find_package(NEON_2_SSE REQUIRED)
+    find_package(NEON_2_SSE REQUIRED CONFIG)
   list(APPEND TFLITE_TARGET_DEPENDENCIES NEON_2_SSE::NEON_2_SSE)
 endif()
 find_package(cpuinfo REQUIRED)  #CPUINFO is used by XNNPACK and RUY library
