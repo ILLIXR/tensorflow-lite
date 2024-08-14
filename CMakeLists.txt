@@ -394,10 +394,16 @@ if(TFLITE_ENABLE_GPU)
       ${TFLITE_DELEGATES_METAL_SRCS}
     )
     target_include_directories(metal_delegate PUBLIC
-      ${CMAKE_BINARY_DIR}/abseil-cpp
       ${CMAKE_BINARY_DIR}/flatbuffers/include
       PRIVATE ${TENSORFLOW_SOURCE_DIR} ${TENSORFLOW_ROOT_DIR}
     )
+        target_link_libraries(metal_delegate PUBLIC
+                              absl::status
+                              absl::strings
+                              absl::flat_hash_map
+                              absl::time
+                              absl::span
+        )
     #
     # generate flatbuffers header for inference_context
     #
@@ -436,11 +442,16 @@ if(TFLITE_ENABLE_GPU)
      set_source_files_properties(${METAL_DELEGATE_PATH}${lib_name}.cc  PROPERTIES LANGUAGE OBJCXX)
      add_library("${lib_name}" STATIC ${METAL_DELEGATE_PATH}${lib_name}.cc)
      target_include_directories("${lib_name}" PUBLIC
-       ${CMAKE_BINARY_DIR}/abseil-cpp
        ${CMAKE_BINARY_DIR}/flatbuffers/include
      )
      set_target_properties(${lib_name} PROPERTIES LINKER_LANGUAGE OBJCXX)
-     target_link_libraries(${lib_name})
+            target_link_libraries(${lib_name} PUBLIC
+                                  absl::status
+                                  absl::strings
+                                  absl::flat_hash_map
+                                  absl::time
+                                  absl::span
+            )
    endforeach()
 
    list(APPEND MM_SRCS
@@ -449,11 +460,14 @@ if(TFLITE_ENABLE_GPU)
    )
    foreach(lib_name ${MM_SRCS})
      add_library("${lib_name}" STATIC ${METAL_DELEGATE_PATH}${lib_name}.mm)
-     target_include_directories("${lib_name}" PUBLIC
+            target_link_libraries(${lib_name} PUBLIC
        ${CMAKE_BINARY_DIR}/abseil-cpp
-       ${CMAKE_BINARY_DIR}/flatbuffers/include
+                                  absl::status
+                                  absl::strings
+                                  absl::flat_hash_map
+                                  absl::time
+                                  absl::span
      )
-     target_link_libraries(${lib_name})
    endforeach()
 endif()
   list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DCL_DELEGATE_NO_GL" "-DEGL_NO_X11")
