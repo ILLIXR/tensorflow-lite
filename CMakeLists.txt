@@ -159,37 +159,8 @@ include_directories(
   ${TSL_SOURCE_DIR}
   ${XLA_SOURCE_DIR}
 )
-# Download necessary dependencies.
-# Download pthreadpool source package if it doesn't exist.
-if(SYSTEM_PTHREADPOOL)
-  find_library(PTHREADPOOL_LIB pthreadpool REQUIRED)
-  find_path(PTHREADPOOL_INCLUDE_DIR pthreadpool.h)
+find_package(pthreadpool REQUIRED CONFIG)
 
-  include_directories(AFTER ${PTHREADPOOL_INCLUDE_DIR})
-  message("FOUND PTHREADPOOL")
-elseif(NOT DEFINED PTHREADPOOL_SOURCE_DIR)
-    message(STATUS "Downloading pthreadpool to ${CMAKE_BINARY_DIR}/pthreadpool-source (define SYSTEM_PTHREADPOOL or PTHREADPOOL_SOURCE_DIR to avoid it)")
-    configure_file(src/cmake/DownloadPThreadPool.cmake "${CMAKE_BINARY_DIR}/pthreadpool-download/CMakeLists.txt")
-    execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -G "${CMAKE_GENERATOR}" -DPTHREADPOOL_LIBRARY_TYPE=shared .
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pthreadpool-download")
-    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pthreadpool-download")
-    execute_process(COMMAND "${CMAKE_COMMAND}" --install .
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pthreadpool-download")
-    set(PTHREADPOOL_SOURCE_DIR "${CMAKE_BINARY_DIR}/pthreadpool-source" CACHE STRING "pthreadpool source directory")
-    add_library(PTHREADLIB SHARED IMPORTED)
-    set_property(TARGET PTHREADLIB PROPERTY
-    IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libpthreadpool.so")
-endif()
-# Configure pthreadpool
-if(NOT SYSTEM_PTHREADPOOL AND NOT TARGET pthreadpool)
-  set(PTHREADPOOL_BUILD_TESTS OFF CACHE BOOL "")
-  set(PTHREADPOOL_BUILD_BENCHMARKS OFF CACHE BOOL "")
-  set(PTHREADPOOL_ALLOW_DEPRECATED_API OFF CACHE BOOL "")
-  add_subdirectory(
-    "${PTHREADPOOL_SOURCE_DIR}"
-    "${CMAKE_BINARY_DIR}/pthreadpool")
-endif()
 set(TF_TARGET_PRIVATE_OPTIONS "")
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang$")
   # TensorFlow uses a heap of deprecated proto fields so surpress these
@@ -695,7 +666,7 @@ target_link_libraries(tensorflow-lite
     gemmlowp::gemmlowp
     ml_dtypes
     ruy::ruy
-    PTHREADLIB
+                      pthreadpool::pthreadpool
     ${CMAKE_DL_LIBS}
     ${TFLITE_TARGET_DEPENDENCIES}
 )
