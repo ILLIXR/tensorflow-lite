@@ -509,12 +509,6 @@ if(TFLITE_ENABLE_XNNPACK)
                                 TFLITE_DELEGATES_XNNPACK_SRCS
                                 FILTER ".*(_test|_tester)\\.(cc|h)"
     )
-    add_library(XNNPACKLIB SHARED IMPORTED)
-    list(APPEND TFLITE_TARGET_DEPENDENCIES
-         XNNPACKLIB
-    )
-    set_property(TARGET XNNPACKLIB PROPERTY
-                 IMPORTED_LOCATION ${tfl-XNNPACK_LIBRARIES})
     list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DTFLITE_BUILD_WITH_XNNPACK_DELEGATE")
     list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DXNNPACK_DELEGATE_ENABLE_QS8")
     list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DXNNPACK_DELEGATE_ENABLE_QU8")
@@ -649,11 +643,11 @@ set(_ALL_TFLITE_SRCS
     ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema_generated.h
     ${TFLITE_SOURCE_DIR}/schema/schema_generated.h
 )
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(BUILD_SHARED_LIBS)
     add_library(tensorflow-lite SHARED
                 ${_ALL_TFLITE_SRCS}
     )
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 else()
     add_library(tensorflow-lite STATIC
                 ${_ALL_TFLITE_SRCS}
