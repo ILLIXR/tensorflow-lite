@@ -44,10 +44,10 @@ cmake_policy(SET CMP0042 NEW)
 project(tensorflow-lite C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(TENSORFLOW_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE PATH
+set(TENSORFLOW_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
     "Directory that contains the TensorFlow project"
 )
-set(TENSORFLOW_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
+#set(TENSORFLOW_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
 set(TSL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/third_party/tsl")
 set(XLA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/")
 set(TFLITE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
@@ -397,8 +397,8 @@ if(TFLITE_ENABLE_GPU)
         add_library(metal_delegate STATIC
                     ${TFLITE_DELEGATES_METAL_SRCS}
         )
-        target_include_directories(metal_delegate PUBLIC
-                                   PRIVATE ${TENSORFLOW_SOURCE_DIR} ${TENSORFLOW_ROOT_DIR}
+        target_include_directories(metal_delegate
+                                   PRIVATE ${TENSORFLOW_SOURCE_DIR}
         )
         target_link_libraries(metal_delegate PUBLIC
                               flatbuffers::flatbuffers
@@ -420,7 +420,6 @@ if(TFLITE_ENABLE_GPU)
                 OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/metal/inference_context_generated.h
                 COMMAND ${FLATC} --scoped-enums
                 -I ${TENSORFLOW_SOURCE_DIR}
-                -I ${TENSORFLOW_ROOT_DIR}
                 -o ${TFLITE_SOURCE_DIR}/delegates/gpu/metal
                 -c ${TFLITE_SOURCE_DIR}/delegates/gpu/metal/inference_context.fbs
         )
@@ -666,7 +665,7 @@ set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
 target_include_directories(tensorflow-lite
                            PUBLIC $<BUILD_INTERFACE:${TENSORFLOW_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-                           PRIVATE ${TENSORFLOW_ROOT_DIR}
+                           #PRIVATE ${TENSORFLOW_ROOT_DIR}
 )
 target_link_libraries(tensorflow-lite
                       PUBLIC
@@ -716,6 +715,9 @@ if(TFLITE_ENABLE_INSTALL)
         file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
 
         string(REPLACE "src/" "" dir ${dir})
+        if(${dir} STREQUAL "src")
+            set(dir "")
+        endif()
         install(
                 FILES ${hdr}
                 DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/tensorflow/lite/${dir}"
@@ -770,8 +772,8 @@ set_target_properties(_pywrap_tensorflow_interpreter_wrapper PROPERTIES PREFIX "
 target_include_directories(_pywrap_tensorflow_interpreter_wrapper
                            PUBLIC
                            ${TENSORFLOW_SOURCE_DIR}
-                           PRIVATE
-                           ${TENSORFLOW_ROOT_DIR}
+                           #PRIVATE
+                           #${TENSORFLOW_ROOT_DIR}
 )
 
 target_link_libraries(_pywrap_tensorflow_interpreter_wrapper
