@@ -52,10 +52,12 @@ set(TSL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/third_party/tsl"
 set(XLA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/xla/")
 set(TFLITE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
 set(CMAKE_MODULE_PATH
+    ${CMAKE_INSTALL_PREFIX}/lib/cmake
     "${TFLITE_SOURCE_DIR}/tools/cmake/modules"
     ${CMAKE_MODULE_PATH}
 )
 set(CMAKE_PREFIX_PATH
+    ${CMAKE_INSTALL_PREFIX}/lib/cmake
     "${TFLITE_SOURCE_DIR}/tools/cmake/modules"
     ${CMAKE_PREFIX_PATH}
 )
@@ -268,6 +270,7 @@ populate_tflite_source_vars("core/tools" TFLITE_CORE_TOOLS_SRCS)
 populate_tflite_source_vars("c" TFLITE_C_SRCS)
 populate_tflite_source_vars("delegates" TFLITE_DELEGATES_SRCS)
 if(TFLITE_ENABLE_GPU)
+
     find_package(PkgConfig REQUIRED)
     find_package(OpenCLHeaders REQUIRED CONFIG)
     pkg_check_modules(vulkan REQUIRED vulkan)
@@ -277,6 +280,26 @@ if(TFLITE_ENABLE_GPU)
         pkg_check_modules(glesv2 REQUIRED glesv2)
         pkg_check_modules(egl REQUIRED egl)
     endif()
+
+    add_custom_command(
+            OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common_generated.h
+            COMMAND flatbuffers::flatc --scoped-enums
+            -I ${TENSORFLOW_SOURCE_DIR}
+            -o ${TFLITE_SOURCE_DIR}/delegates/gpu/gl
+            -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common.fbs
+    )
+    add_custom_command(
+            OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model_generated.h
+            COMMAND flatbuffers::flatc --scoped-enums
+            -I ${TENSORFLOW_SOURCE_DIR}
+            -o ${TFLITE_SOURCE_DIR}/delegates/gpu/gl
+            -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model.fbs
+    )
+    add_custom_target(
+            compiled_model_cc_fbs
+            DEPENDS ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model_generated.h ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common_generated.h
+    )
+
     populate_tflite_source_vars(
             "delegates/gpu/cl" TFLITE_DELEGATES_GPU_CL_SRCS
             FILTER "(_test|gl_interop|gpu_api_delegate|egl_sync)\\.(cc|h)$"
@@ -348,6 +371,16 @@ if(TFLITE_ENABLE_GPU)
             TFLITE_DELEGATES_GPU_GL_KERNELS_MEDIAPIPE_SRC
             FILTER "(_test)\\(.cc|h)$"
     )
+    populate_tflite_source_vars(
+            "delegates/gpu/gl"
+            TFLITE_DELEGATES_GPU_GL_SRC
+            FILTER "(_test)//(.cc|h)$"
+    )
+    populate_tflite_source_vars(
+            "delegates/gpu/gl/converters"
+            TFLITE_DELEGATES_GPU_GL_CONVERTERS_SRC
+            FILTER "(_test)//(.cc|h)$"
+    )
     list(APPEND TFLITE_DELEGATES_GPU_SRCS
          ${TFLITE_SOURCE_DIR}/delegates/gpu/api.cc
          ${TFLITE_SOURCE_DIR}/delegates/gpu/delegate.cc
@@ -355,6 +388,7 @@ if(TFLITE_ENABLE_GPU)
          ${TFLITE_SOURCE_DIR}/delegates/gpu/tflite_profile.cc
          ${TFLITE_SOURCE_DIR}/experimental/acceleration/compatibility/android_info.cc
          ${TFLITE_DELEGATES_GPU_CL_SRCS}
+         ${TFLITE_DELEGATES_GPU_GL_CONVERTERS_SRC}
          ${TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS}
          ${TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_GOOGLE_SRC}
@@ -370,6 +404,7 @@ if(TFLITE_ENABLE_GPU)
          ${TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_TRANSFORMATIONS_SRCS}
          ${TFLITE_DELEGATES_GPU_GL_KERNELS_MEDIAPIPE_SRC}
+         ${TFLITE_DELEGATES_GPU_GL_SRC}
          ${TFLITE_SOURCE_DIR}/tools/versioning/gpu_compatibility.cc
          ${TFLITE_SOURCE_DIR}/tools/versioning/op_signature.cc
     )
@@ -411,11 +446,6 @@ if(TFLITE_ENABLE_GPU)
         #
         # generate flatbuffers header for inference_context
         #
-        if(FLATBUFFERS_FLATC_EXECUTABLE)
-            set(FLATC ${FLATBUFFERS_FLATC_EXECUTABLE})
-        else()
-            set(FLATC flatc)
-        endif()
         add_custom_command(
                 OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/metal/inference_context_generated.h
                 COMMAND ${FLATC} --scoped-enums
@@ -653,6 +683,7 @@ else()
                 ${_ALL_TFLITE_SRCS}
     )
 endif()
+add_dependencies(tensorflow-lite compiled_model_cc_fbs)
 target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
 #target_include_directories(tensorflow-lite PUBLIC ${fft2d_INCLUDE_DIRS})
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
