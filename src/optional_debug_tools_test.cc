@@ -38,7 +38,7 @@ void InitInputTensorData(Interpreter* interpreter) {
 
 TEST(OptionalDebugTools, PrintInterpreterState) {
   auto model = FlatBufferModel::BuildFromFile(
-      /testdata/add.bin");
+      "testdata/add.bin");
   ASSERT_TRUE(model);
 
   std::unique_ptr<Interpreter> interpreter;
@@ -64,7 +64,7 @@ TEST(OptionalDebugTools, PrintInterpreterState) {
 
 TEST(OptionalDebugTools, PrintInterpreterStateWithDelegate) {
   auto model = FlatBufferModel::BuildFromFile(
-      /testdata/add.bin");
+      "testdata/add.bin");
   ASSERT_TRUE(model);
 
   // Create and instantiate an interpreter with a delegate.

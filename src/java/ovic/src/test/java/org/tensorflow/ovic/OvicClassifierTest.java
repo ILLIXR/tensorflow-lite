@@ -45,7 +45,7 @@ public final class OvicClassifierTest {
   private ByteBuffer lowResTestImage = null;
   private OvicClassificationResult testResult = null;
   private static final String LABELS_PATH =
-      /java/ovic/src/testdata/labels.txt";
+      "java/ovic/src/testdata/labels.txt";
   private static final String QUANTIZED_MODEL_PATH =
       "external/tflite_ovic_testdata/quantized_model.lite";
   private static final String LOW_RES_MODEL_PATH =

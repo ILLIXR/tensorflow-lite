@@ -118,7 +118,7 @@ TfLiteStatus Eval(TfLiteContext* context, TfLiteNode* node) {
   TF_LITE_ENSURE_OK(context,
                     GetOutputSafe(context, node, /*index=*/0, &output_tensor));
   // kTfliteUInt8 corresponds to unsigned char as shown in
-  // /portable_type_to_tflitetype.h".
+  // "portable_type_to_tflitetype.h".
   unsigned char* output_arr = GetTensorData<unsigned char>(output_tensor);
   Status decoder_status;
   std::unique_ptr<LibjpegDecoder> decoder =

@@ -15,6 +15,19 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_SCHEMA_SCHEMA_UTILS_H_
 #define TENSORFLOW_LITE_SCHEMA_SCHEMA_UTILS_H_
 
-#include "compiler/mlir/lite/schema/schema_utils.h"  // IWYU pragma: keep
+#include "flatbuffers/flatbuffers.h"
+#include "schema/schema_generated.h"
+
+namespace tflite {
+
+// The following methods are introduced to resolve op builtin code shortage
+// problem. The new builtin operator will be assigned to the extended builtin
+// code field in the flatbuffer schema. Those methods helps to hide builtin code
+// details.
+BuiltinOperator GetBuiltinCode(const OperatorCode *op_code);
+
+BuiltinOperator GetBuiltinCode(const OperatorCodeT *op_code);
+
+}  // namespace tflite
 
 #endif  // TENSORFLOW_LITE_SCHEMA_SCHEMA_UTILS_H_

@@ -42,9 +42,9 @@ bool DetectDotprodByLinuxAuxvMethod() {
 bool DetectArmNeonDotprod() {
 #if defined __linux__ && defined __aarch64__
   return DetectDotprodByLinuxAuxvMethod();
-#else
-  return false;
 #endif
+
+  return false;
 }
 
 }  // namespace tflite

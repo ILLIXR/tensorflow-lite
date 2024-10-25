@@ -59,7 +59,7 @@ namespace tflite {
 namespace evaluation {
 
 // Same as Interpreter::TfLiteDelegatePtr, defined here to avoid pulling
-// in tensorflow/lite/interpreter.h dependency.
+// in interpreter.h dependency.
 using TfLiteDelegatePtr =
     std::unique_ptr<TfLiteOpaqueDelegate, void (*)(TfLiteOpaqueDelegate*)>;
 
@@ -105,9 +105,7 @@ TfLiteDelegatePtr CreateXNNPACKDelegate();
 TfLiteDelegatePtr CreateXNNPACKDelegate(
     const TfLiteXNNPackDelegateOptions* options);
 #endif  // !defined(TFLITE_WITHOUT_XNNPACK)
-TfLiteDelegatePtr CreateXNNPACKDelegate(
-    int num_threads, bool force_fp16,
-    const char* experimental_weight_cache_file_path = nullptr);
+TfLiteDelegatePtr CreateXNNPACKDelegate(int num_threads, bool force_fp16);
 
 TfLiteDelegatePtr CreateCoreMlDelegate();
 }  // namespace evaluation

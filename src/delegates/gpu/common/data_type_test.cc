@@ -15,6 +15,7 @@ limitations under the License.
 
 #include "delegates/gpu/common/data_type.h"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 namespace tflite {

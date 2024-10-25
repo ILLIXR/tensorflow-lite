@@ -53,8 +53,7 @@ PyObject* MlirQuantizeModel(PyObject* data, bool disable_per_channel,
                             PyObject* op_denylist = nullptr,
                             PyObject* node_denylist = nullptr,
                             bool enable_variable_quantization = false,
-                            bool disable_per_channel_for_dense_layers = false,
-                            PyObject* debug_options_proto_txt_raw = nullptr);
+                            bool disable_per_channel_for_dense_layers = false);
 
 // Sparsifies model to encode sparse tensors with proper format. Throws error if
 // sparsification fails.
@@ -64,7 +63,7 @@ PyObject* MlirSparsifyModel(PyObject* data);
 PyObject* RegisterCustomOpdefs(PyObject* list);
 
 // Returns the collected TFLite conversion errors.
-std::vector<std::string> RetrieveCollectedErrors();
+const std::vector<std::string> RetrieveCollectedErrors();
 
 // Returns MLIR string dump of the given Flatbuffer model.
 std::string FlatBufferFileToMlir(const std::string& model,

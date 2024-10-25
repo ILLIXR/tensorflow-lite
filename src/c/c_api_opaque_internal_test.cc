@@ -35,7 +35,7 @@ TEST(ObtainRegistrationFromContext, ProducesValidResult) {
   BuiltinOpResolver op_resolver;
   std::unique_ptr<Interpreter> interpreter;
   std::unique_ptr<FlatBufferModel> model = FlatBufferModel::BuildFromFile(
-      /testdata/add.bin");
+      "testdata/add.bin");
   ASSERT_NE(model, nullptr);
   InterpreterBuilder builder(*model, op_resolver);
   ASSERT_EQ(builder(&interpreter), kTfLiteOk);
@@ -56,7 +56,7 @@ TEST(ObtainRegistrationFromContext, CachingWorks) {
   BuiltinOpResolver op_resolver;
   std::unique_ptr<Interpreter> interpreter;
   std::unique_ptr<FlatBufferModel> model = FlatBufferModel::BuildFromFile(
-      /testdata/add.bin");
+      "testdata/add.bin");
   ASSERT_NE(model, nullptr);
   InterpreterBuilder builder(*model, op_resolver);
   ASSERT_EQ(builder(&interpreter), kTfLiteOk);

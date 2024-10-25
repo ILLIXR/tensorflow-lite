@@ -39,17 +39,17 @@ import org.tensorflow.lite.acceleration.ValidatedAccelerationConfig;
 @RunWith(JUnit4.class)
 public final class InterpreterApiTest {
 
-  private static final String MODEL_PATH = /java/src/testdata/add.bin";
+  private static final String MODEL_PATH = "java/src/testdata/add.bin";
   private static final String MULTIPLE_INPUTS_MODEL_PATH =
-      /testdata/multi_add.bin";
+      "testdata/multi_add.bin";
   private static final String FLEX_MODEL_PATH =
-      /testdata/multi_add_flex.bin";
+      "testdata/multi_add_flex.bin";
   private static final String UNKNOWN_DIMS_MODEL_PATH =
-      /java/src/testdata/add_unknown_dimensions.bin";
+      "java/src/testdata/add_unknown_dimensions.bin";
   private static final String DYNAMIC_SHAPES_MODEL_PATH =
-      /testdata/dynamic_shapes.bin";
+      "testdata/dynamic_shapes.bin";
   private static final String BOOL_MODEL =
-      /java/src/testdata/tile_with_bool_input.bin";
+      "java/src/testdata/tile_with_bool_input.bin";
 
   private static final ByteBuffer MODEL_BUFFER = TestUtils.getTestFileAsBuffer(MODEL_PATH);
   private static final ByteBuffer MULTIPLE_INPUTS_MODEL_BUFFER =

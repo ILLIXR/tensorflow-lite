@@ -17,7 +17,7 @@ limitations under the License.
 // the future.
 //
 // Usage: bazel run -c opt \
-// tensorflow/lite/nnapi:nnapi_example -- <filename>
+// nnapi:nnapi_example -- <filename>
 //
 #include <dirent.h>
 #include <cstdarg>

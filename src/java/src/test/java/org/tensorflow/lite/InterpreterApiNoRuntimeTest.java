@@ -32,7 +32,7 @@ import org.tensorflow.lite.InterpreterApi.Options.TfLiteRuntime;
 @RunWith(JUnit4.class)
 public final class InterpreterApiNoRuntimeTest {
 
-  private static final String MODEL_PATH = /java/src/testdata/add.bin";
+  private static final String MODEL_PATH = "java/src/testdata/add.bin";
 
   private static final ByteBuffer MODEL_BUFFER = TestUtils.getTestFileAsBuffer(MODEL_PATH);
 

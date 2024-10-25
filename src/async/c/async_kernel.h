@@ -13,7 +13,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_ASYNC_C_ASYNC_KERNEL_H_
 
 /// For documentation, see
-/// third_party/tensorflow/lite/core/async/c/async_kernel.h.
+/// third_party/core/async/c/async_kernel.h.
 
 #include "core/async/c/async_kernel.h"  // IWYU pragma: export
 

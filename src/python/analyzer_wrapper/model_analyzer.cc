@@ -382,7 +382,7 @@ void dump_model_stats(std::stringstream& out_stream,
                 "subgraphs and etc.\n";
   out_stream << "  You can find more details from "
                 "https://github.com/tensorflow/tensorflow/blob/master/"
-                /schema/schema.fbs\n";
+                "schema/schema.fbs\n";
 }
 
 }  // namespace

@@ -58,7 +58,7 @@ class AddOpModel : public SingleOpModel {
 
 TEST(GpuDelegateCompatibilityCheckerTest, CheckOnlineMode) {
   const std::string& full_path =
-      tensorflow::GetDataDependencyFilepath(/testdata/add.bin");
+      tensorflow::GetDataDependencyFilepath("testdata/add.bin");
   auto fb_model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(fb_model);
 
@@ -75,7 +75,7 @@ TEST(GpuDelegateCompatibilityCheckerTest, CheckOnlineMode) {
 
 TEST(GpuDelegateCompatibilityCheckerTest, CompatibleModelOfflineMode) {
   const std::string& full_path =
-      tensorflow::GetDataDependencyFilepath(/testdata/add.bin");
+      tensorflow::GetDataDependencyFilepath("testdata/add.bin");
   auto fb_model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(fb_model);
 
@@ -93,7 +93,7 @@ TEST(GpuDelegateCompatibilityCheckerTest, CompatibleModelOfflineMode) {
 
 TEST(GpuDelegateCompatibilityCheckerTest, IncompatibleModelOfflineMode) {
   const std::string& full_path = tensorflow::GetDataDependencyFilepath(
-      /testdata/conv3d_huge_im2col.bin");
+      "testdata/conv3d_huge_im2col.bin");
 
   auto fb_model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(fb_model);

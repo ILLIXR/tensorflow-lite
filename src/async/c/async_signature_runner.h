@@ -13,7 +13,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_ASYNC_C_ASYNC_SIGNATURE_RUNNER_H_
 
 /// For documentation, see
-/// third_party/tensorflow/lite/core/async/c/async_signature_runner.h.
+/// third_party/core/async/c/async_signature_runner.h.
 
 #include "core/async/c/async_signature_runner.h"  // IWYU pragma: export
 

@@ -30,7 +30,7 @@ import tflite.BenchmarkEvent;
  *
  * <p>It performs accuracy benchmark tests via TFLite MiniBenchmark based on the input arguments.
  * Please check the test example in
- * tensorflow/lite/tools/benchmark/experimental/delegate_performance/android/README.md.
+ * tools/benchmark/experimental/delegate_performance/android/README.md.
  *
  * <p>Generates a PASS/PASS_WITH_WARNING/FAIL result.
  *

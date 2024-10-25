@@ -15,7 +15,7 @@ syntax = "proto2";
 
 package toco;
 
-import /toco/types.proto";
+import "toco/types.proto";
 
 message InputArrayShape {
   // Dimensions of the tensor.

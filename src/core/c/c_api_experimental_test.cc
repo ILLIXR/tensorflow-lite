@@ -63,7 +63,7 @@ const TfLiteOperator* GetNoOpOperator() {
 
 TEST(CApiExperimentalTest, Smoke) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -85,7 +85,7 @@ TEST(CApiExperimentalTest, Smoke) {
 // Test using TfLiteInterpreterCreateWithSelectedOps.
 TEST(CApiExperimentalTest, SelectedBuiltins) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -108,7 +108,7 @@ TEST(CApiExperimentalTest, SelectedBuiltins) {
 // we do NOT get the standard builtin operators by default.
 TEST(CApiExperimentalTest, MissingBuiltin) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   // Install a custom error reporter into the interpreter by way of options.
@@ -165,7 +165,7 @@ const TfLiteRegistration* MyFindCustomOp(void*, const char* custom_op,
 // Test using TfLiteInterpreterCreateWithSelectedOps.
 TEST(CApiExperimentalTest, SetOpResolver) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -274,7 +274,7 @@ const TfLiteRegistration* SinhFindCustomOp(void*, const char* custom_op,
 // TfLiteInterpreterCreateWithSelectedOps.
 TEST(CApiExperimentalTest, SetOpResolverExternal) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -304,7 +304,7 @@ TEST(CApiExperimentalTest, SetOpResolverExternal) {
 TEST(CApiExperimentalTest,
      SetOpResolverExternalWithFallback_BuiltinOp_NormalCase) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -339,7 +339,7 @@ TEST(CApiExperimentalTest,
 TEST(CApiExperimentalTest,
      SetOpResolverExternalWithFallback_BuiltinOp_FallbackCase) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -375,7 +375,7 @@ TEST(CApiExperimentalTest,
 TEST(CApiExperimentalTest,
      SetOpResolverExternalWithFallback_CustomOp_NormalCase) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/custom_sinh.bin");
+      "testdata/custom_sinh.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -419,7 +419,7 @@ TEST(CApiExperimentalTest,
 TEST(CApiExperimentalTest,
      SetOpResolverExternalWithFallback_CustomOp_FallbackCase) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/custom_sinh.bin");
+      "testdata/custom_sinh.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -459,7 +459,7 @@ TEST(CApiExperimentalTest,
 }
 
 // The following helper functions for custom allocation related tests are
-// adapted from //tensorflow/lite/interpreter_test.cc.
+// adapted from //interpreter_test.cc.
 
 // Returns the size of the alignment gap between `offset` and the address that
 // is aligned to a multiple of 'alignment'. The value returned will be less than
@@ -487,7 +487,7 @@ TfLiteCustomAllocation NewCustomAlloc(size_t num_bytes, int required_alignment,
 // Test using TfLiteInterpreterSetCustomAllocationForTensor.
 TEST(CApiExperimentalTest, SetCustomAllocationForInputTensorSuccess) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -523,7 +523,7 @@ TEST(CApiExperimentalTest, SetCustomAllocationForInputTensorSuccess) {
 
 TEST(CApiExperimentalTest, SetCustomAllocationForOutputTensorSuccess) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -572,7 +572,7 @@ TEST(CApiExperimentalTest, SetCustomAllocationForOutputTensorSuccess) {
 
 TEST(CApiExperimentalTest, SetAndGetBufferHandleSuccess) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   auto simple_delegate = std::make_unique<SimpleDelegate>(
@@ -714,7 +714,7 @@ TEST(CApiExperimentalTest, SetAllowBufferHandleOutputFalse) {
   delegate_state.Reset();
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
   int kNumTensorElements = 1 * 8 * 8 * 3;
 
@@ -792,7 +792,7 @@ TEST(CApiExperimentalTest, SetAllowBufferHandleOutputTrue) {
   delegate_state.Reset();
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
   int kNumTensorElements = 1 * 8 * 8 * 3;
 
@@ -864,7 +864,7 @@ TEST(CApiExperimentalTest, SetAllowBufferHandleOutputTrue) {
 
 TEST(CApiExperimentalTest, SetInvalidHandleToTensor) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   auto simple_delegate = std::make_unique<SimpleDelegate>(
@@ -950,7 +950,7 @@ void CheckExecution(TfLiteInterpreterOptions* options,
                     TfLiteStatus expected_first_result,
                     TfLiteStatus expected_subsequent_results) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreter* interpreter = TfLiteInterpreterCreate(model, options);

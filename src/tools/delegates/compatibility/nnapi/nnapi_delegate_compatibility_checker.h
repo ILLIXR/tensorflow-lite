@@ -77,7 +77,7 @@ class NnapiDelegateCompatibilityChecker
       tflite::proto::OpCompatibilityResult* op_result) override;
 
   // Runtime feature level
-  // Refer to '/tensorflow/lite/nnapi/NeuralNetworksTypes.h'
+  // Refer to '/nnapi/NeuralNetworksTypes.h'
   int runtime_feature_level_;
 };
 

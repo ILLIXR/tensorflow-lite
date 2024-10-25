@@ -22,6 +22,7 @@ limitations under the License.
 #include "core/c/c_api_types.h"
 #include "core/interpreter.h"
 #include "string_type.h"
+#include "testing/util.h"
 
 namespace tflite {
 

@@ -19,10 +19,9 @@ find_package(nsync REQUIRED)
 find_package(re2 REQUIRED)
 
 # Generate the mutable schema_generated.h header for tests.
-set(TF_SOURCE_DIR "${TENSORFLOW_SOURCE_DIR}/tensorflow")
-set(SCHEMA_GENERATED_ROOT ${TF_SOURCE_DIR}/compiler/mlir/lite/schema)
-set(SCHEMA_FILE ${SCHEMA_GENERATED_ROOT}/schema.fbs)
-set(SCHEMA_GENERATED_PATH ${SCHEMA_GENERATED_ROOT}/mutable)
+set(SCHEMA_FILE ${TFLITE_SOURCE_DIR}/schema/schema.fbs)
+set(SCHEMA_GENERATED_ROOT ${CMAKE_CURRENT_BINARY_DIR}/schema)
+set(SCHEMA_GENERATED_PATH ${SCHEMA_GENERATED_ROOT}/schema/mutable)
 set(SCHEMA_GENERATED_FILE ${SCHEMA_GENERATED_PATH}/schema_generated.h)
 
 # Use the util function in flatbuffer to generate the schema header.
@@ -71,7 +70,7 @@ set(DELEGATE_PROVIDERS_SUPP
 set(DELEGATE_PROVIDERS
   ${DELEGATE_PROVIDERS_SUPP}
   ${TFLITE_SOURCE_DIR}/tools/delegates/default_execution_provider.cc
-  # List of delegates referenced as options in the tensorflow/lite/CMakeLists.txt
+  # List of delegates referenced as options in the CMakeLists.txt
   ${TFLITE_SOURCE_DIR}/tools/delegates/gpu_delegate_provider.cc
   ${TFLITE_SOURCE_DIR}/tools/delegates/nnapi_delegate_provider.cc
   ${TFLITE_SOURCE_DIR}/tools/delegates/xnnpack_delegate_provider.cc
@@ -85,7 +84,7 @@ set(TEST_FRAMEWORK_SRC
   ${TFLITE_SOURCE_DIR}/delegates/nnapi/acceleration_test_list.cc
   ${TFLITE_SOURCE_DIR}/delegates/nnapi/acceleration_test_util.cc
   ${TFLITE_SOURCE_DIR}/profiling/memory_info.cc
-  ${TFLITE_SOURCE_DIR}/../compiler/mlir/lite/schema/schema_conversion_utils.cc
+  ${TFLITE_SOURCE_DIR}/schema/schema_conversion_utils.cc
   ${TFLITE_SOURCE_DIR}/tools/command_line_flags.cc
   ${DELEGATE_PROVIDERS}
   ${TFLITE_SOURCE_DIR}/tools/optimize/model_utils.cc
@@ -147,7 +146,7 @@ add_library(tensorflow-lite-test-external-main ${TEST_FRAMEWORK_MAIN_SRC})
 target_link_libraries(tensorflow-lite-test-external-main
   # We need the nnapi related symbols later.
   # Please check:
-  # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/tools/delegates/BUILD#L96
+  # https://github.com/tensorflow/tensorflow/blob/master/tools/delegates/BUILD#L96
   -Wl,--whole-archive
   tensorflow-lite-test-base
   -Wl,--no-whole-archive

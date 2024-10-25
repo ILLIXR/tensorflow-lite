@@ -691,8 +691,7 @@ TfLiteStatus InterpreterBuilder::ParseTensors(
 
       if (subgraph->SetTensorParametersReadOnly(
               i, type, get_name(tensor), dims, quantization, buffer_ptr,
-              buffer_size, allocation_, sparsity,
-              /*buffer_identifier=*/tensor->buffer()) != kTfLiteOk) {
+              buffer_size, allocation_, sparsity) != kTfLiteOk) {
         TF_LITE_REPORT_ERROR(error_reporter_,
                              "Tensor %d is invalidly specified in schema.\n",
                              i);

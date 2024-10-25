@@ -26,7 +26,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/../../../.."
 
-TOOLCHAINS_DIR=$(realpath tensorflow/lite/tools/cmake/toolchains)
+TOOLCHAINS_DIR=$(realpath tools/cmake/toolchains)
 mkdir -p ${TOOLCHAINS_DIR}
 
 case $1 in

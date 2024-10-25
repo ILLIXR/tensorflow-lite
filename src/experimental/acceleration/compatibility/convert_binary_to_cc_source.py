@@ -14,7 +14,7 @@
 # ==============================================================================
 """Simple script to convert binary file to C++ source code for embedding."""
 
-# This is a version of //tensorflow/lite/python/convert_file_to_c_source.py
+# This is a version of //python/convert_file_to_c_source.py
 # with minimal dependencies to reduce build times. See b/158254039.
 
 import argparse
@@ -22,7 +22,7 @@ import datetime
 import sys
 
 
-# Cribbed from //tensorflow/lite/python/util.py
+# Cribbed from //python/util.py
 # Changed:
 # - Alignment from 4 to 16 for generality (16 can be required for SIMD)
 # - Added 'extern' to source for building on C++ target platforms
@@ -93,7 +93,7 @@ limitations under the License.
 
   source_template = """{license_text}
 // This is a binary file that has been converted into a C++ data array using the
-// //tensorflow/lite/experimental/acceleration/compatibility/convert_binary_to_cc_source.py
+// //experimental/acceleration/compatibility/convert_binary_to_cc_source.py
 // script. This form is useful for compiling into a binary to simplify
 // deployment on mobile devices
 
@@ -126,7 +126,7 @@ extern const int {array_name}_len = {array_length};
 {license_text}
 
 // This is a binary file that has been converted into a C++ data array using the
-// //tensorflow/lite/experimental/acceleration/compatibility/convert_binary_to_cc_source.py
+// //experimental/acceleration/compatibility/convert_binary_to_cc_source.py
 // script. This form is useful for compiling into a binary to simplify
 // deployment on mobile devices
 

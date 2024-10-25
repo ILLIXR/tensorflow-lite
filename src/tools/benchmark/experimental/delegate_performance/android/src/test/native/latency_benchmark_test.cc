@@ -35,7 +35,7 @@ static constexpr char kModelPath[] =
     "../tflite_mobilenet_float/"
     "mobilenet_v1_1.0_224.tflite";
 static constexpr char kSettingsFilePath[] =
-    /tools/delegates/experimental/stable_delegate/"
+    "tools/delegates/experimental/stable_delegate/"
     "test_sample_stable_delegate_settings.json";
 
 class LatencyBenchmarkTest : public ::testing::Test {

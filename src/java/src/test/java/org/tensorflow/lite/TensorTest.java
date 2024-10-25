@@ -38,19 +38,19 @@ import org.tensorflow.lite.Tensor.QuantizationParams;
 @RunWith(JUnit4.class)
 public final class TensorTest {
 
-  private static final String MODEL_PATH = /java/src/testdata/add.bin";
+  private static final String MODEL_PATH = "java/src/testdata/add.bin";
 
   private static final String INT_MODEL_PATH =
-      /java/src/testdata/int32.bin";
+      "java/src/testdata/int32.bin";
 
   private static final String LONG_MODEL_PATH =
-      /java/src/testdata/int64.bin";
+      "java/src/testdata/int64.bin";
 
   private static final String STRING_MODEL_PATH =
-      /java/src/testdata/string.bin";
+      "java/src/testdata/string.bin";
 
   private static final String QUANTIZED_MODEL_PATH =
-      /java/src/testdata/quantized.bin";
+      "java/src/testdata/quantized.bin";
 
   private NativeInterpreterWrapper wrapper;
   private TensorImpl tensor;

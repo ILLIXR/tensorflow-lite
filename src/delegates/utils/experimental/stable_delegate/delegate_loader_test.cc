@@ -31,7 +31,7 @@ using tflite::delegates::utils::LoadSymbolFromSharedLibrary;
 TEST(TfLiteDelegateLoaderUtilsTest, Simple) {
   const TfLiteStableDelegate* stable_delegate_handle =
       LoadDelegateFromSharedLibrary(
-          /delegates/utils/experimental/"
+          "delegates/utils/experimental/"
           "sample_stable_delegate/"
           "libtensorflowlite_sample_stable_delegate.so"
           );
@@ -46,7 +46,7 @@ TEST(TfLiteDelegateLoaderUtilsTest, Simple) {
   EXPECT_NE(stable_delegate_handle->delegate_plugin, nullptr);
   EXPECT_STREQ(
       getenv(tflite::delegates::utils::kTfLiteLibraryPathEnvironmentVariable),
-      /delegates/utils/experimental/"
+      "delegates/utils/experimental/"
       "sample_stable_delegate");
 
   // Builds TFLiteSettings flatbuffer and passes into delegate plugin create
@@ -69,7 +69,7 @@ TEST(TfLiteDelegateLoaderUtilsTest, Simple) {
 
 TEST(TfLiteDelegateLoaderUtilsTest, WrongSymbolReturnsNullptr) {
   void* symbol_pointer = LoadSymbolFromSharedLibrary(
-      /delegates/utils/experimental/"
+      "delegates/utils/experimental/"
       "sample_stable_delegate/libtensorflowlite_sample_stable_delegate.so",
       "NOT_REAL_SYMBOL");
   EXPECT_EQ(symbol_pointer, nullptr);

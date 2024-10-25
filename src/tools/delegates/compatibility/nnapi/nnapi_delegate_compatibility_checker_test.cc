@@ -119,7 +119,7 @@ TEST_F(NnapiDccTest, InvalidRuntimeFeatureLevel) {
 
 TEST_F(NnapiDccTest, CompatibleModelOnlineMode) {
   const std::string& full_path =
-      tensorflow::GetDataDependencyFilepath(/testdata/add.bin");
+      tensorflow::GetDataDependencyFilepath("testdata/add.bin");
   auto fb_model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(fb_model);
 

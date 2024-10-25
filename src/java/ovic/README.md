@@ -39,7 +39,7 @@ curl -L https://storage.googleapis.com/download.tensorflow.org/data/ovic_2019_04
 *   Unzip the package into the testdata folder:
 
 ```sh
-unzip -j /tmp/ovic.zip -d tensorflow/lite/java/ovic/src/testdata/
+unzip -j /tmp/ovic.zip -d java/ovic/src/testdata/
 ```
 
 ### Run tests
@@ -48,9 +48,9 @@ You can run test with Bazel as below. This helps to ensure that the installation
 is correct.
 
 ```sh
-bazel test //tensorflow/lite/java/ovic:OvicClassifierTest --cxxopt=-Wno-all --test_output=all
+bazel test //java/ovic:OvicClassifierTest --cxxopt=-Wno-all --test_output=all
 
-bazel test //tensorflow/lite/java/ovic:OvicDetectorTest --cxxopt=-Wno-all --test_output=all
+bazel test //java/ovic:OvicDetectorTest --cxxopt=-Wno-all --test_output=all
 ```
 
 ### Test your submissions
@@ -67,8 +67,8 @@ for classification should be [1, 1001] instead of [1,1,1,1001]). Let say the
 submission file is located at `/path/to/my_model.lite`, then call:
 
 ```sh
-bazel build //tensorflow/lite/java/ovic:ovic_validator --cxxopt=-Wno-all
-bazel-bin/tensorflow/lite/java/ovic/ovic_validator /path/to/my_model.lite classify
+bazel build //java/ovic:ovic_validator --cxxopt=-Wno-all
+bazel-bin/java/ovic/ovic_validator /path/to/my_model.lite classify
 ```
 
 Successful validation should print the following message to terminal:
@@ -90,18 +90,18 @@ and std values).
 *   Move your submission to the testdata folder:
 
 ```sh
-cp /path/to/my_model.lite tensorflow/lite/java/ovic/src/testdata/
+cp /path/to/my_model.lite java/ovic/src/testdata/
 ```
 
 *   Resize the test image to the resolutions that are expected by your
     submission:
 
 The test images can be found at
-`tensorflow/lite/java/ovic/src/testdata/test_image_*.jpg`. You may reuse these
+`java/ovic/src/testdata/test_image_*.jpg`. You may reuse these
 images if your image resolutions are 128x128 or 224x224.
 
 *   Add your model and test image to the BUILD rule at
-    `tensorflow/lite/java/ovic/src/testdata/BUILD`:
+    `java/ovic/src/testdata/BUILD`:
 
 ```JSON
 filegroup(
@@ -159,7 +159,7 @@ Make sure that you have followed instructions in
 [Test your submissions](#test-your-submissions) to add your model to the
 testdata folder and to the corresponding build rules.
 
-Modify `tensorflow/lite/java/ovic/demo/app/OvicBenchmarkerActivity.java`:
+Modify `java/ovic/demo/app/OvicBenchmarkerActivity.java`:
 
 *   Add your model to the benchmarker apk by changing `modelPath` and
     `testImagePath` to your submission and test image.
@@ -201,8 +201,8 @@ Note: You'll need ROOT access to the phone to change processor affinity.
 *   Build and install the app.
 
 ```
-bazel build -c opt --cxxopt=-Wno-all //tensorflow/lite/java/ovic/demo/app:ovic_benchmarker_binary
-adb install -r bazel-bin/tensorflow/lite/java/ovic/demo/app/ovic_benchmarker_binary.apk
+bazel build -c opt --cxxopt=-Wno-all //java/ovic/demo/app:ovic_benchmarker_binary
+adb install -r bazel-bin/java/ovic/demo/app/ovic_benchmarker_binary.apk
 ```
 
 Start the app and pick a task by clicking either the `CLF` button for

@@ -24,7 +24,7 @@ limitations under the License.
 
 namespace tflite {
 namespace {
-// Same w/ that defined in tensorflow/lite/arena_planner.cc.
+// Same w/ that defined in arena_planner.cc.
 constexpr int32_t kNodeNotAssigned = std::numeric_limits<int32_t>::max();
 
 void PrintIntVector(const std::vector<int>& v) {

@@ -18,7 +18,7 @@ Usage:
 
 generate_examples <output directory>
 
-bazel run //tensorflow/lite/testing:generate_examples
+bazel run //testing:generate_examples
 
 To more easily debug failures use (or override) the --save_graphdefs flag to
 place text proto graphdefs into the generated zip files.

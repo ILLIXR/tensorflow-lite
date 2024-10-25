@@ -22,7 +22,7 @@ limitations under the License.
 namespace {
 
 const char* kHeaderFileName =
-    /builtin_ops.h";
+    "builtin_ops.h";
 
 // The test ensures that `builtin_ops.h` is consistent with the FlatBuffer
 // schema definition. When the schema is modified, it's required to run the

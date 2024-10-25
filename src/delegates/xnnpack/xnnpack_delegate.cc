@@ -38,16 +38,13 @@ limitations under the License.
 #include "core/api/profiler.h"
 #include "core/c/builtin_op_data.h"
 #include "core/c/common.h"
-#include "core/subgraph.h"
 #include "delegates/xnnpack/quantization_util.h"
-#include "delegates/xnnpack/weight_cache.h"
 #include "kernels/cpu_backend_context.h"
 #include "kernels/internal/compatibility.h"
 #include "kernels/internal/tensor_ctypes.h"
 #include "kernels/internal/utils/sparsity_format_converter.h"
 #include "kernels/kernel_util.h"
 #include "kernels/padding.h"
-#include "logger.h"
 #include "minimal_logging.h"
 #include "schema/schema_generated.h"
 #include "tools/optimize/reduced_precision_support.h"
@@ -490,8 +487,6 @@ class VariableHolder {
   std::map<uint32_t, const TfLiteTensor*> global_id_to_dims_and_type_;
 };
 
-class Subgraph;
-
 class Delegate {
   friend class Subgraph;
 
@@ -523,38 +518,13 @@ class Delegate {
     }
 
 #endif
-    TFLITE_LOG_PROD(tflite::TFLITE_LOG_INFO,
-                    "Created TensorFlow Lite XNNPACK delegate for CPU.");
+    TFLITE_LOG_PROD_ONCE(tflite::TFLITE_LOG_INFO,
+                         "Created TensorFlow Lite XNNPACK delegate for CPU.");
 
     options_ =
         options != nullptr ? *options : TfLiteXNNPackDelegateOptionsDefault();
     delegate_.flags = GetXNNPackDelegateFlags();
     workspace_.reset(workspace);
-
-    // If no weight cache is provided, add one when requested.
-    if (!options_.weights_cache) {
-      if (options_.experimental_weight_cache_file_path) {
-        if (weight_cache_provider_.Load(
-                options_.experimental_weight_cache_file_path)) {
-          TFLITE_LOG_PROD(tflite::TFLITE_LOG_INFO,
-                          "XNNPack weight cache loaded from '%s'.",
-                          options_.experimental_weight_cache_file_path);
-        } else {
-          TFLITE_LOG_PROD(
-              tflite::TFLITE_LOG_INFO,
-              "XNNPack weight cache not found at '%s', building it.",
-              options_.experimental_weight_cache_file_path);
-        }
-        options_.weights_cache =
-            reinterpret_cast<TfLiteXNNPackDelegateWeightsCache*>(
-                weight_cache_provider_.GetCacheProvider().context);
-        options_.experimental_weight_cache_file_path =
-            weight_cache_provider_.GetFilePath().data();
-      } else {
-        TFLITE_LOG_PROD(tflite::TFLITE_LOG_INFO,
-                        "XNNPack weight cache not enabled.");
-      }
-    }
   }
 
   TfLiteIntArray* PrepareOpsToDelegate(TfLiteContext* context);
@@ -694,7 +664,7 @@ class Delegate {
 #endif
   }
 
-  const TfLiteXNNPackDelegateOptions& options() const { return options_; }
+  TfLiteXNNPackDelegateOptions options() const { return options_; }
 
   int64_t GetXNNPackDelegateFlags() {
     if (enable_subgraph_reshaping()) {
@@ -741,10 +711,6 @@ class Delegate {
   TfLiteXNNPackDelegateOptions options_{};
   VariableHolder variable_holder_;
   std::mutex workspace_mutex_;
-
-  // If no weight cache is provided and a cache is set in the delegate options,
-  // this will be used as a weight cache.
-  MMapWeightCacheProvider weight_cache_provider_;
 };
 
 class Subgraph {
@@ -815,13 +781,6 @@ class Subgraph {
   static Subgraph* Create(TfLiteContext* context,
                           const TfLiteDelegateParams* params,
                           Delegate& delegate) {
-    // Map tensors identifiers before packing anything.
-    if (delegate.weight_cache_provider_.IsActive()) {
-      delegate.weight_cache_provider_.MapTensorIdentifiers(
-          context->tensors, context->tensors_size,
-          reinterpret_cast<tflite::Subgraph*>(context->impl_)
-              ->GetTensorBufferIdentifiers());
-    }
     // Convert subgraph inputs and outputs to hash sets for faster lookup.
     const std::unordered_set<int> inputs(
         &params->input_tensors->data[0],
@@ -1162,18 +1121,6 @@ class Subgraph {
   TfLiteStatus Prepare(TfLiteContext* context, TfLiteNode* node,
                        bool enable_subgraph_reshaping, Delegate* delegate) {
     std::lock_guard<std::mutex> lock(delegate->workspace_mutex_);
-
-    // The weights cache needs to be finalized only once. Prepare will be called
-    // for each partition after all the partitions have been created (therefore
-    // all the weights are known and have been packed).
-    if (delegate->weight_cache_provider_.IsActive()) {
-      if (!delegate->weight_cache_provider_.Finalize()) {
-        TF_LITE_KERNEL_LOG(context,
-                           "XNNPack delegate failed to finalize cache.");
-        return kTfLiteError;
-      }
-    }
-
     if (enable_subgraph_reshaping) {
       xnn_status status = xnn_status_invalid_state;
       for (int i = 0; i < inputs_.size(); ++i) {
@@ -1223,8 +1170,10 @@ class Subgraph {
           return kTfLiteError;
         }
       }
+      return kTfLiteOk;
+    } else {
+      return kTfLiteOk;
     }
-    return kTfLiteOk;
   }
 
   TfLiteStatus Invoke(TfLiteContext* context, bool enable_subgraph_reshaping,
@@ -3042,10 +2991,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input1_tensor, node->inputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input1_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_ADD, node_index));
 
     const TfLiteTensor& input2_tensor = tensors[node->inputs->data[1]];
     TF_LITE_ENSURE_STATUS(
@@ -3054,10 +2999,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input2_tensor, node->inputs->data[1],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input2_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[1],
-        BuiltinOperator_ADD, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(
@@ -3961,10 +3902,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(
         CheckTensorNonDynamicAllocation(delegate, logging_context, input_tensor,
                                         node->inputs->data[0], node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_DEQUANTIZE, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -4004,10 +3941,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input1_tensor, node->inputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input1_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_DIV, node_index));
 
     const TfLiteTensor& input2_tensor = tensors[node->inputs->data[1]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -4015,10 +3948,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input2_tensor, node->inputs->data[1],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input2_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[1],
-        BuiltinOperator_DIV, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -5201,10 +5130,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input1_tensor, node->inputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input1_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_MUL, node_index));
 
     const TfLiteTensor& input2_tensor = tensors[node->inputs->data[1]];
     TF_LITE_ENSURE_STATUS(
@@ -5213,10 +5138,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input2_tensor, node->inputs->data[1],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input2_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[1],
-        BuiltinOperator_MUL, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(
@@ -5467,10 +5388,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, output_tensor, node->outputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_QUANTIZE, node_index));
 
     const xnn_datatype input_datatype = GetXNNPackDatatype(
         logging_context, input_tensor, node->inputs->data[0]);
@@ -5638,9 +5555,8 @@ class Subgraph {
         CheckTensorFloat32OrQUInt8Type(delegate, logging_context, input_tensor,
                                        node->inputs->data[0], node_index));
     TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_RESHAPE, node_index));
+        logging_context, input_tensor, 0, XNN_MAX_TENSOR_DIMS,
+        node->inputs->data[0], BuiltinOperator_RESHAPE, node_index));
     TF_LITE_ENSURE_STATUS(
         CheckTensorNonDynamicAllocation(delegate, logging_context, input_tensor,
                                         node->inputs->data[0], node_index));
@@ -5682,9 +5598,8 @@ class Subgraph {
         CheckTensorFloat32OrQUInt8Type(delegate, logging_context, output_tensor,
                                        node->outputs->data[0], node_index));
     TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, output_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->outputs->data[0],
-        BuiltinOperator_RESHAPE, node_index));
+        logging_context, output_tensor, 0, XNN_MAX_TENSOR_DIMS,
+        node->outputs->data[0], BuiltinOperator_RESHAPE, node_index));
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, output_tensor, node->outputs->data[0],
         node_index));
@@ -6162,10 +6077,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(
         CheckTensorNonDynamicAllocation(delegate, logging_context, input_tensor,
                                         node->inputs->data[0], node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_SQUARE, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -6261,14 +6172,7 @@ class Subgraph {
         node_index));
     const int dims_count = NumElements(&perm_tensor);
     std::array<size_t, XNN_MAX_TENSOR_DIMS> perm;
-    for (int i = 0; i < dims_count; ++i) {
-      if (perm_data[i] < 0) {
-        perm[i] = perm_data[i] + dims_count;
-      } else {
-        perm[i] = perm_data[i];
-      }
-    }
-
+    std::copy(&perm_data[0], &perm_data[dims_count], perm.begin());
     if (subgraph != nullptr) {
       const xnn_status status = xnn_define_static_transpose(
           subgraph, dims_count, perm.data(),
@@ -6372,10 +6276,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input1_tensor, node->inputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input1_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_SQUARED_DIFFERENCE, node_index));
 
     const TfLiteTensor& input2_tensor = tensors[node->inputs->data[1]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -6383,10 +6283,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input2_tensor, node->inputs->data[1],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input2_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[1],
-        BuiltinOperator_SQUARED_DIFFERENCE, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(CheckTensorFloat32Type(
@@ -6486,26 +6382,6 @@ class Subgraph {
         BuiltinOperator_STRIDED_SLICE, node_index));
     TF_LITE_ENSURE_STATUS(CheckTensorInt32Type(logging_context, end_tensor,
                                                end_tensor_index, node_index));
-
-    const auto CheckParamTensorShape = [&](const TfLiteTensor& param_tensor,
-                                           const char* param_tensor_name) {
-      if (input_tensor.dims->size != GetTensorData<int32_t>(&param_tensor)[0]) {
-        TF_LITE_MAYBE_KERNEL_LOG(
-            logging_context,
-            "%s shape (%d) must be equal to input shape (%d) "
-            "in STRIDED_SLICE node #%d",
-            param_tensor_name,
-            reinterpret_cast<const int32_t*>(param_tensor.data.data)[0],
-            input_tensor.dims->size, node_index);
-        return kTfLiteError;
-      }
-      return kTfLiteOk;
-    };
-
-    TF_LITE_ENSURE_STATUS(CheckParamTensorShape(begin_tensor, "begin_tensor"));
-    TF_LITE_ENSURE_STATUS(CheckParamTensorShape(end_tensor, "end_tensor"));
-    TF_LITE_ENSURE_STATUS(
-        CheckParamTensorShape(stride_tensor, "stride_tensor"));
 
     TF_LITE_ENSURE_STATUS(
         CheckTensorsDimensionMatch(logging_context, stride_tensor, begin_tensor,
@@ -6999,10 +6875,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input1_tensor, node->inputs->data[0],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input1_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[0],
-        BuiltinOperator_SUB, node_index));
 
     const TfLiteTensor& input2_tensor = tensors[node->inputs->data[1]];
     TF_LITE_ENSURE_STATUS(
@@ -7011,10 +6883,6 @@ class Subgraph {
     TF_LITE_ENSURE_STATUS(CheckTensorNonDynamicAllocation(
         delegate, logging_context, input2_tensor, node->inputs->data[1],
         node_index));
-    TF_LITE_ENSURE_STATUS(CheckTensorShape(
-        logging_context, input2_tensor, /*min_num_dims=*/0,
-        /*max_num_dims=*/XNN_MAX_TENSOR_DIMS, node->inputs->data[1],
-        BuiltinOperator_SUB, node_index));
 
     const TfLiteTensor& output_tensor = tensors[node->outputs->data[0]];
     TF_LITE_ENSURE_STATUS(
@@ -7930,6 +7798,7 @@ void TfLiteXNNPackDelegateWeightsCacheDelete(
   }
   auto weights_cache = reinterpret_cast<xnn_weights_cache_t>(cache);
   xnn_delete_weights_cache(weights_cache);
+  xnn_deinitialize();
 }
 
 TfLiteXNNPackDelegateOptions TfLiteXNNPackDelegateOptionsDefault() {
@@ -7961,6 +7830,14 @@ TfLiteXNNPackDelegateOptions TfLiteXNNPackDelegateOptionsDefault() {
   return options;
 }
 
+TfLiteXNNPackDelegateOptions GetOptions(const void* delegate_data) {
+  if (delegate_data == nullptr) {
+    return TfLiteXNNPackDelegateOptionsDefault();
+  }
+  return static_cast<const tflite::xnnpack::Delegate*>(delegate_data)
+      ->options();
+}
+
 TfLiteDelegate* TfLiteXNNPackDelegateCreate(
     const TfLiteXNNPackDelegateOptions* options) {
   return TfLiteXNNPackDelegateCreateWithThreadpool(options, nullptr);
@@ -7990,15 +7867,6 @@ void* TfLiteXNNPackDelegateGetThreadPool(TfLiteDelegate* delegate) {
 
   return static_cast<void*>(
       static_cast<::tflite::xnnpack::Delegate*>(delegate->data_)->threadpool());
-}
-
-const TfLiteXNNPackDelegateOptions* TfLiteXNNPackDelegateGetOptions(
-    TfLiteDelegate* delegate) {
-  if (delegate == nullptr) {
-    return nullptr;
-  }
-  return &(static_cast<const tflite::xnnpack::Delegate*>(delegate->data_)
-               ->options());
 }
 
 int TfLiteXNNPackDelegateGetFlags(TfLiteDelegate* delegate) {

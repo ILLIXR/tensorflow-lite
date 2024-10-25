@@ -25,7 +25,7 @@ limitations under the License.
 namespace toco {
 
 // For consistency with the parameters defined in extended LstmCell's kernel
-// (tensorflow/lite/kernels/lstm.cc),
+// (kernels/lstm.cc),
 // use lowercase for these constants.
 
 enum ExtendedLstmCellInputs {

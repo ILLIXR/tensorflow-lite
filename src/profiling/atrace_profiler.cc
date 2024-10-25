@@ -66,7 +66,7 @@ class ATraceProfiler : public tflite::Profiler {
       // name
       // as tag, node index as event_metadata1 and subgraph index as
       // event_metadata2. See the macro TFLITE_SCOPED_TAGGED_OPERATOR_PROFILE
-      // defined in tensorflow/lite/core/api/profiler.h for details.
+      // defined in core/api/profiler.h for details.
       // Regardless the 'event_type', we encode the perfetto event name as
       // tag@event_metadata1/event_metadata2. In case of OPERATOR_INVOKE_EVENT,
       // the perfetto event name will be op_name@node_index/subgraph_index

@@ -27,13 +27,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class InterpreterCustomizedAndroidBuildTest {
   // Supported model.
-  private static final String SUPPORTED_MODEL_PATH = /testdata/add.bin";
+  private static final String SUPPORTED_MODEL_PATH = "testdata/add.bin";
   private static final ByteBuffer SUPPORTED_MODEL_BUFFER =
       TestUtils.getTestFileAsBuffer(SUPPORTED_MODEL_PATH);
 
   // Model with unregistered operator.
   private static final String UNSUPPORTED_MODEL_PATH =
-      /testdata/test_model.bin";
+      "testdata/test_model.bin";
   private static final ByteBuffer UNSUPPORTED_MODEL_BUFFER =
       TestUtils.getTestFileAsBuffer(UNSUPPORTED_MODEL_PATH);
 

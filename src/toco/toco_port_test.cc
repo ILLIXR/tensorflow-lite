@@ -24,9 +24,9 @@ namespace port {
 namespace {
 
 #ifdef PLATFORM_GOOGLE
-#define TFLITE_PREFIX "third_party/tensorflow/lite/"
+#define TFLITE_PREFIX "third_party/"
 #else
-#define TFLITE_PREFIX /"
+#define TFLITE_PREFIX ""
 #endif
 
 TEST(TocoPortTest, Exists) {

@@ -515,7 +515,7 @@ TEST(TestOpaqueDelegate, PrepareCopyFromFree) {
 
   std::unique_ptr<tflite::FlatBufferModel> model =
       tflite::FlatBufferModel::BuildFromFile(
-          /testdata/add.bin");
+          "testdata/add.bin");
   ASSERT_NE(model, nullptr);
   constexpr int kNumTensorElements = 1 * 8 * 8 * 3;
 
@@ -586,7 +586,7 @@ TEST(TestOpaqueDelegate, PrepareCopyFromFree) {
 TEST(TestDelegateKernel, WithoutName) {
   std::unique_ptr<tflite::FlatBufferModel> model =
       tflite::FlatBufferModel::BuildFromFile(
-          /testdata/add.bin");
+          "testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   tflite::ops::builtin::BuiltinOpResolver resolver;

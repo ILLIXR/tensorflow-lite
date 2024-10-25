@@ -18,7 +18,7 @@ limitations under the License.
 #define SYMBOL_LOOKUP_FAILED 12
 #define TOO_FEW_ARGUMENTS 13
 #define UNSUPPORTED_PLATFORM 14
-// LINT.ThenChange(//tensorflow/lite/experimental/acceleration/mini_benchmark/status_codes.h)
+// LINT.ThenChange(//experimental/acceleration/mini_benchmark/status_codes.h)
 
 #ifndef _WIN32
 #include <dlfcn.h>

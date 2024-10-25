@@ -20,7 +20,7 @@ limitations under the License.
 /// delegates can be defined using C++, but the interface between the
 /// interpreter and the operations are C.
 ///
-/// For documentation, see tensorflow/lite/core/c/common.h.
+/// For documentation, see core/c/common.h.
 ///
 /// See also c_api_opaque.h which has more ABI-stable variants of some of these
 /// APIs.

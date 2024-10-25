@@ -87,29 +87,29 @@ class FlexOpModel : public SingleOpModel {
 };
 
 TEST_F(FlexOpsListTest, TestModelsNoFlex) {
-  ReadOps(/testdata/test_model.bin");
+  ReadOps("testdata/test_model.bin");
   EXPECT_EQ(output_text_, "[]\n");
 }
 
 TEST_F(FlexOpsListTest, TestBrokenModel) {
   EXPECT_DEATH_IF_SUPPORTED(
-      ReadOps(/testdata/test_model_broken.bin"), "");
+      ReadOps("testdata/test_model_broken.bin"), "");
 }
 
 TEST_F(FlexOpsListTest, TestZeroSubgraphs) {
-  ReadOps(/testdata/0_subgraphs.bin");
+  ReadOps("testdata/0_subgraphs.bin");
   EXPECT_EQ(output_text_, "[]\n");
 }
 
 TEST_F(FlexOpsListTest, TestFlexAdd) {
-  ReadOps(/testdata/multi_add_flex.bin");
+  ReadOps("testdata/multi_add_flex.bin");
   EXPECT_EQ(output_text_,
             "[[\"AddV2\",\"BinaryOp<CPUDevice, functor::add<float>>\"]]\n");
 }
 
 TEST_F(FlexOpsListTest, TestTwoModel) {
-  ReadOps(/testdata/multi_add_flex.bin");
-  ReadOps(/testdata/softplus_flex.bin");
+  ReadOps("testdata/multi_add_flex.bin");
+  ReadOps("testdata/softplus_flex.bin");
   EXPECT_EQ(output_text_,
             "[[\"AddV2\",\"BinaryOp<CPUDevice, "
             "functor::add<float>>\"],[\"Softplus\",\"SoftplusOp<CPUDevice, "
@@ -117,8 +117,8 @@ TEST_F(FlexOpsListTest, TestTwoModel) {
 }
 
 TEST_F(FlexOpsListTest, TestDuplicatedOp) {
-  ReadOps(/testdata/multi_add_flex.bin");
-  ReadOps(/testdata/multi_add_flex.bin");
+  ReadOps("testdata/multi_add_flex.bin");
+  ReadOps("testdata/multi_add_flex.bin");
   EXPECT_EQ(output_text_,
             "[[\"AddV2\",\"BinaryOp<CPUDevice, functor::add<float>>\"]]\n");
 }

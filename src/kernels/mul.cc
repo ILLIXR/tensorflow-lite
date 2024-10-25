@@ -324,7 +324,7 @@ TfLiteStatus EvalQuantized(TfLiteContext* context, TfLiteNode* node,
       // We have this check, because in case of int16
       // input1_val*input2_val can overflow int32:
       // see MulElementwise -
-      // tensorflow/lite/kernels/internal/reference/integer_ops/mul.h in case of
+      // kernels/internal/reference/integer_ops/mul.h in case of
       // 16-bit this function is used in symmetric quantization, so offset
       // should be zero.
       TF_LITE_ENSURE_EQ(context, op_params.input1_offset, 0.0);

@@ -29,7 +29,7 @@ constexpr char kTfLiteLibraryPathEnvironmentVariable[] =
 
 // Loads the TFLite delegate shared library and returns the pointer to
 // TfLiteStableDelegate (defined in
-// tensorflow/lite/acceleration/configuration/c/stable_delegate.h).
+// acceleration/configuration/c/stable_delegate.h).
 // The returned pointer could be null if the delegate shared library cannot be
 // opened or the delegate symbol cannot be found.
 const TfLiteStableDelegate* LoadDelegateFromSharedLibrary(

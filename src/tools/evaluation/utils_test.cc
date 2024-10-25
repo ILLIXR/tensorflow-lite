@@ -25,11 +25,11 @@ namespace evaluation {
 namespace {
 
 constexpr char kLabelsPath[] =
-    /tools/evaluation/testdata/labels.txt";
+    "tools/evaluation/testdata/labels.txt";
 constexpr char kDirPath[] =
-    /tools/evaluation/testdata";
+    "tools/evaluation/testdata";
 constexpr char kEmptyFilePath[] =
-    /tools/evaluation/testdata/empty.txt";
+    "tools/evaluation/testdata/empty.txt";
 
 TEST(UtilsTest, StripTrailingSlashesTest) {
   std::string path = "/usr/local/folder/";

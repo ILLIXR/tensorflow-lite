@@ -29,9 +29,9 @@ namespace {
 
 TEST(UtilTest, SimpleE2ETest) {
   TestOptions options;
-  options.tflite_model = /testdata/add.bin";
+  options.tflite_model = "testdata/add.bin";
   options.read_input_from_file =
-      /testing/kernel_test/testdata/test_input.csv";
+      "testing/kernel_test/testdata/test_input.csv";
   options.dump_output_to_file = ::testing::TempDir() + "/test_out.csv";
   options.kernel_type = "REFERENCE";
   std::unique_ptr<TestRunner> runner(new TfLiteDriver(

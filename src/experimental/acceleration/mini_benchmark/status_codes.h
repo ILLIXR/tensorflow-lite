@@ -45,7 +45,7 @@ enum MinibenchmarkStatus {
   kMinibenchmarkRunnerMainSymbolLookupFailed = 12,
   kMinibenchmarkRunnerMainTooFewArguments = 13,
   kMinibenchmarkUnsupportedPlatform = 14,
-  // LINT.ThenChange(//tensorflow/lite/experimental/acceleration/mini_benchmark/runner_main.c)
+  // LINT.ThenChange(//experimental/acceleration/mini_benchmark/runner_main.c)
   // General status codes that may be used anywhere
   //
   // Next available code: 121

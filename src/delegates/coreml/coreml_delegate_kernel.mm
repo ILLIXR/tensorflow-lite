@@ -20,7 +20,7 @@ limitations under the License.
 #include "kernels/internal/types.h"
 #include "kernels/kernel_util.h"
 
-#import /delegates/coreml/coreml_executor.h"
+#import "delegates/coreml/coreml_executor.h"
 
 namespace tflite {
 namespace delegates {

@@ -15,8 +15,8 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_TOOLS_SERIALIZATION_ENUM_MAPPING_H_
 #define TENSORFLOW_LITE_TOOLS_SERIALIZATION_ENUM_MAPPING_H_
 
-#include "tensorflow/compiler/mlir/lite/schema/mutable/schema_generated.h"
 #include "builtin_op_data.h"
+#include "schema/mutable/schema_generated.h"
 
 // TODO(aselle): Ideally extract this from the schema.
 

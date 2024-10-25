@@ -289,7 +289,7 @@ class InterpreterFp16 : public DelegatedInterpreter {
 // function calls that includes GetOpsToReplace when calling
 // ModifyGraphWithDelegate. A TfLiteContext is needed to test GetOpsToReplace,
 // but TfLiteContexts intentionally make it difficult to call certain functions
-// in a non-delegate context (see tensorflow/lite/subgraph/subgraph.cc for
+// in a non-delegate context (see subgraph/subgraph.cc for
 // details) We create our own GetExecutionPlan, GetNodeAndRegistration and
 // PreviewDelegatePartitioning lambdas inside each test, but we can't use local
 // captures without changing the function signature. Therefore, this test data

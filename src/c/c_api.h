@@ -19,7 +19,7 @@ limitations under the License.
 ///
 /// C API for TensorFlow Lite.
 ///
-/// For documentation, see tensorflow/lite/core/c/c_api.h
+/// For documentation, see core/c/c_api.h
 
 #include "core/c/c_api.h"
 

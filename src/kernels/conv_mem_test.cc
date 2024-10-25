@@ -66,7 +66,7 @@ TEST(ConvMemUsage, HugeIm2ColData) {
   TestMemoryThreshold(
       // The model has a conv op will require a temporary tensor of ~3.5GB if
       // im2col is performed.
-      /testdata/conv_huge_im2col.bin",
+      "testdata/conv_huge_im2col.bin",
       /*threshold_in_kb=*/3 * 1024 * 1024);
 }
 
@@ -74,7 +74,7 @@ TEST(Conv3DMemUsage, HugeIm2ColData) {
   TestMemoryThreshold(
       // The model has a Conv3D op will require a temporary tensor of ~1.3GB if
       // im2col is performed.If not, it will use about 450MB.
-      /testdata/conv3d_huge_im2col.bin",
+      "testdata/conv3d_huge_im2col.bin",
       /*threshold_in_kb=*/1 * 1024 * 1024);
 }
 

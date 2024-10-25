@@ -47,7 +47,7 @@ class Delegate:
   The shared library is expected to have two functions,
   tflite_plugin_create_delegate and tflite_plugin_destroy_delegate,
   which should implement the API specified in
-  tensorflow/lite/delegates/external/external_delegate_interface.h.
+  delegates/external/external_delegate_interface.h.
   """
 
   def __init__(self, library, options=None):

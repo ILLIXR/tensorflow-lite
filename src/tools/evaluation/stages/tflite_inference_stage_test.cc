@@ -32,7 +32,7 @@ namespace {
 
 constexpr char kTfliteInferenceStageName[] = "tflite_inference_stage";
 constexpr char kModelPath[] =
-    /testdata/add_quantized.bin";
+    "testdata/add_quantized.bin";
 constexpr int kTotalElements = 1 * 8 * 8 * 3;
 
 template <typename T>

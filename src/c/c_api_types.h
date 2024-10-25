@@ -19,7 +19,7 @@ limitations under the License.
 ///
 /// C API types for TensorFlow Lite.
 ///
-/// For documentation, see tensorflow/lite/core/c/c_api_types.h
+/// For documentation, see core/c/c_api_types.h
 
 #include "core/c/c_api_types.h"
 

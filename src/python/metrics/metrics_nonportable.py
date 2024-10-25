@@ -22,11 +22,11 @@ from tensorflow.lite.python.metrics.wrapper import metrics_wrapper
 from tensorflow.python.eager import monitoring
 
 _counter_debugger_creation = monitoring.Counter(
-    '/tensorflow/lite/quantization_debugger/created',
+    '/quantization_debugger/created',
     'Counter for the number of debugger created.')
 
 _counter_interpreter_creation = monitoring.Counter(
-    '/tensorflow/lite/interpreter/created',
+    '/interpreter/created',
     'Counter for number of interpreter created in Python.', 'language')
 
 # The following are conversion metrics. Attempt and success are kept separated
@@ -36,24 +36,24 @@ _counter_interpreter_creation = monitoring.Counter(
 # beginning of conversion process and the success count at the end is more
 # suitable in these cases.
 _counter_conversion_attempt = monitoring.Counter(
-    '/tensorflow/lite/convert/attempt',
+    '/convert/attempt',
     'Counter for number of conversion attempts.')
 
 _counter_conversion_success = monitoring.Counter(
-    '/tensorflow/lite/convert/success',
+    '/convert/success',
     'Counter for number of successful conversions.')
 
 _gauge_conversion_params = monitoring.StringGauge(
-    '/tensorflow/lite/convert/params',
+    '/convert/params',
     'Gauge for keeping conversion parameters.', 'name')
 
 _gauge_conversion_errors = monitoring.StringGauge(
-    '/tensorflow/lite/convert/errors',
+    '/convert/errors',
     'Gauge for collecting conversion errors. The value represents the error '
     'message.', 'component', 'subcomponent', 'op_name', 'error_code')
 
 _gauge_conversion_latency = monitoring.IntGauge(
-    '/tensorflow/lite/convert/latency', 'Conversion latency in ms.')
+    '/convert/latency', 'Conversion latency in ms.')
 
 
 class TFLiteMetrics(metrics_interface.TFLiteMetricsInterface):

@@ -70,7 +70,7 @@ enum BenchmarkEventType {
 // Next ID: 2
 message ErrorCode {
   // What the TF Lite level error is.
-  // See TfLiteStatus in tensorflow/lite/core/c/c_api_types.h for the meaning of
+  // See TfLiteStatus in core/c/c_api_types.h for the meaning of
   // the values.
   optional int32 tflite_error = 1;
 }

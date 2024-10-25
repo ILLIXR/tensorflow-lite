@@ -16,7 +16,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_INTERPRETER_H_
 
 /// For documentation, see
-/// tensorflow/lite/core/interpreter.h.
+/// core/interpreter.h.
 
 #include "core/interpreter.h"
 

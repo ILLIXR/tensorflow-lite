@@ -25,7 +25,7 @@ namespace tflite {
 /// Abstract interface that verifies whether a given model is legit.
 /// It facilitates the use-case to verify and build a model without loading it
 /// twice.
-/// (See also /tools/verifier.h".)
+/// (See also "tools/verifier.h".)
 class TfLiteVerifier {
  public:
   /// Returns true if the model is legit.

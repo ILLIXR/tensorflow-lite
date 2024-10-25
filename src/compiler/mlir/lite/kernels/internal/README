@@ -1,2 +1,0 @@
-This folder contains compatibility_macros.h, which mirrors compatibility.h in
-lite/kernels/internal and recreates macros from there that are needed in the converter.

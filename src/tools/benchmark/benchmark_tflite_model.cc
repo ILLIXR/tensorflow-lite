@@ -716,7 +716,7 @@ int64_t BenchmarkTfLiteModel::MayGetModelFileSize() {
   // 1) File descriptor path: path must be in the format of
   // "fd:%model_fd%:%model_offset%:%model_size%".
   // 2) File path: path to the model file.
-  // Please see tensorflow/lite/tools/model_loader.h for more information.
+  // Please see tools/model_loader.h for more information.
   std::vector<absl::string_view> parts = absl::StrSplit(fd_or_graph_path, ':');
   if (!parts.empty() && parts[0] == "fd") {
     int64_t model_size = -1;

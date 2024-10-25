@@ -41,11 +41,11 @@ import org.tensorflow.lite.TestUtils;
 @RunWith(JUnit4.class)
 public final class GpuDelegateTest {
 
-  private static final String MODEL_PATH = /testdata/multi_add.bin";
+  private static final String MODEL_PATH = "testdata/multi_add.bin";
   private static final ByteBuffer MODEL_BUFFER = TestUtils.getTestFileAsBuffer(MODEL_PATH);
   private static final ByteBuffer MOBILENET_QUANTIZED_MODEL_BUFFER =
       TestUtils.getTestFileAsBuffer(
-          /java/demo/app/src/main/assets/mobilenet_v1_1.0_224_quant.tflite");
+          "java/demo/app/src/main/assets/mobilenet_v1_1.0_224_quant.tflite");
 
   @Rule public final TemporaryFolder tempDir = new TemporaryFolder();
 
@@ -81,7 +81,7 @@ public final class GpuDelegateTest {
   public void testInterpreterWithGpu_QuantModelRunWithDelegate() throws Exception {
     ByteBuffer img =
         TestUtils.getTestImageAsByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
 
     Interpreter.Options options = new Interpreter.Options();
     // Default behavior allows quantized models.
@@ -103,7 +103,7 @@ public final class GpuDelegateTest {
   public void testInterpreterWithGpu_QuantModelRunOnCPU() throws Exception {
     ByteBuffer img =
         TestUtils.getTestImageAsByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
 
     Interpreter.Options options = new Interpreter.Options();
     try (GpuDelegate delegate =
@@ -132,7 +132,7 @@ public final class GpuDelegateTest {
             new Interpreter(MOBILENET_QUANTIZED_MODEL_BUFFER, options.addDelegate(delegate))) {
       ByteBuffer img =
         TestUtils.getTestImageAsByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
       byte[][] output = new byte[1][1001];
       interpreter.run(img, output);
       assertThat(interpreter.getInputTensor(0).shape()).isEqualTo(new int[] {1, 224, 224, 3});
@@ -149,7 +149,7 @@ public final class GpuDelegateTest {
   public void testDelegateSerialization() throws Exception {
     ByteBuffer img =
         TestUtils.getTestImageAsByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
 
     File serializationFolder = tempDir.newFolder();
     String serializationDir = serializationFolder.getPath();

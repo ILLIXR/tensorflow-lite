@@ -13,7 +13,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_ASYNC_INTEROP_C_ATTRIBUTE_MAP_H_
 
 /// For documentation, see
-/// tensorflow/lite/core/async/interop/c/attribute_map.h.
+/// core/async/interop/c/attribute_map.h.
 
 #include "core/async/interop/c/attribute_map.h"  // IWYU pragma: export
 

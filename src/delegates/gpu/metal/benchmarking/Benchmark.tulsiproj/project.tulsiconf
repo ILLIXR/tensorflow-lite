@@ -1,7 +1,0 @@
-{
-  "packages" : [
-    /delegates/gpu/metal"
-  ],
-  "projectName" : "Benchmark",
-  "workspaceRoot" : "../../../../../../.."
-}

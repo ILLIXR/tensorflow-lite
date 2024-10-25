@@ -20,6 +20,7 @@ limitations under the License.
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include "delegates/xnnpack/xnnpack_delegate.h"
+#include "delegates/xnnpack/xnnpack_delegate_test.h"
 #include "mutable_op_resolver.h"
 #include "schema/schema_generated.h"
 
@@ -56,13 +57,13 @@ TEST(BuiltinOpResolverTest, HasXNNPACKDelegate_QS8) {
       builtin_op_resolver.GetDelegateCreators()[0];
   std::unique_ptr<TfLiteDelegate, void (*)(TfLiteDelegate *)> delegate =
       delegate_creator(nullptr);
-  const TfLiteXNNPackDelegateOptions *options =
-      TfLiteXNNPackDelegateGetOptions(delegate.get());
+  const void *delegate_data = TfLiteOpaqueDelegateGetData(delegate.get());
+  TfLiteXNNPackDelegateOptions options = GetOptions(delegate_data);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8,
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8,
             TFLITE_XNNPACK_DELEGATE_FLAG_QU8);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
             TFLITE_XNNPACK_DELEGATE_FLAG_QS8);
 }
 
@@ -73,13 +74,13 @@ TEST(BuiltinOpResolverTest, HasXNNPACKDelegate_QS8_QU8) {
       builtin_op_resolver.GetDelegateCreators()[0];
   std::unique_ptr<TfLiteDelegate, void (*)(TfLiteDelegate *)> delegate =
       delegate_creator(nullptr);
-  const TfLiteXNNPackDelegateOptions *options =
-      TfLiteXNNPackDelegateGetOptions(delegate.get());
+  const void *delegate_data = TfLiteOpaqueDelegateGetData(delegate.get());
+  TfLiteXNNPackDelegateOptions options = GetOptions(delegate_data);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8,
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8,
             TFLITE_XNNPACK_DELEGATE_FLAG_QU8);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
             TFLITE_XNNPACK_DELEGATE_FLAG_QS8);
 }
 
@@ -90,12 +91,12 @@ TEST(BuiltinOpResolverTest, Disable_QU8) {
       builtin_op_resolver.GetDelegateCreators()[0];
   std::unique_ptr<TfLiteDelegate, void (*)(TfLiteDelegate *)> delegate =
       delegate_creator(nullptr);
-  const TfLiteXNNPackDelegateOptions *options =
-      TfLiteXNNPackDelegateGetOptions(delegate.get());
+  const void *delegate_data = TfLiteOpaqueDelegateGetData(delegate.get());
+  TfLiteXNNPackDelegateOptions options = GetOptions(delegate_data);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8, 0);
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QU8, 0);
 
-  ASSERT_EQ(options->flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
+  ASSERT_EQ(options.flags & TFLITE_XNNPACK_DELEGATE_FLAG_QS8,
             TFLITE_XNNPACK_DELEGATE_FLAG_QS8);
 }
 #endif  // TFLITE_WITHOUT_XNNPACK
