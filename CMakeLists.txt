@@ -158,7 +158,6 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(cpuinfo REQUIRED libcpuinfo)
 include_directories(AFTER ${cpuinfo_INCLUDE_DIR}) #CPUINFO is used by XNNPACK and RUY library
 
-find_package(ml_dtypes REQUIRED CONFIG)
 find_package(ruy REQUIRED CONFIG)
 # Include TSL, which is in tensorflow/third_party
 include_directories(
@@ -795,7 +794,6 @@ target_link_libraries(tensorflow-lite
                       fft2d::fft2d_fftsg2d
                       flatbuffers::flatbuffers
                       gemmlowp::gemmlowp
-                      ml_dtypes::ml_dtypes
                       ruy::ruy
                       pthreadpool::pthreadpool
                       ${CMAKE_DL_LIBS}
