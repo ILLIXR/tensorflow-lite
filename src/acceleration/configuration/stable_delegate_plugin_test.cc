@@ -31,7 +31,7 @@ class StableDelegatePluginTest : public testing::Test {
   static constexpr tflite::XNNPackFlags kFlagsForTest =
       tflite::XNNPackFlags::XNNPackFlags_TFLITE_XNNPACK_DELEGATE_FLAG_QS8_QU8;
   static constexpr char kDelegateBinaryPath[] =
-      /delegates/utils/experimental/"
+      "delegates/utils/experimental/"
       "stable_delegate/libtensorflowlite_stable_xnnpack_delegate.so";
 
   void SetUp() override {

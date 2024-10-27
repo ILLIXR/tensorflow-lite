@@ -29,7 +29,7 @@ namespace {
 
 constexpr char kInferenceProfilerStageName[] = "inference_profiler_stage";
 constexpr char kModelPath[] =
-    /testdata/add_quantized.bin";
+    "testdata/add_quantized.bin";
 
 EvaluationStageConfig GetInferenceProfilerStageConfig(int num_threads = 1) {
   EvaluationStageConfig config;

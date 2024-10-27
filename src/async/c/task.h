@@ -14,7 +14,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_ASYNC_C_TASK_H_
 
 /// For documentation, see
-/// third_party/tensorflow/lite/core/async/c/task.h.
+/// third_party/core/async/c/task.h.
 
 #include "core/async/c/task.h"  // IWYU pragma: export
 

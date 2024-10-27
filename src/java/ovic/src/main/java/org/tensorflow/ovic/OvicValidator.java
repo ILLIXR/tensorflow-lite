@@ -47,7 +47,7 @@ public class OvicValidator {
     final boolean isDetection = taskString.equals("detect");
     // Label file for detection is never used, so the same label file is used for both tasks.
     final String labelPath =
-        /java/ovic/src/testdata/labels.txt";
+        "java/ovic/src/testdata/labels.txt";
 
     try {
       MappedByteBuffer model = loadModelFile(modelFile);

@@ -27,8 +27,11 @@ namespace tflite {
 namespace xnnpack {
 
 TEST(DynamicallyQuantizedTransposeConvTest, 2x2Stride2) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -52,8 +55,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, 2x2Stride2) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, 3x3Stride2) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
   std::random_device random_device;
   auto rng = std::mt19937(random_device());
@@ -76,8 +82,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, 3x3Stride2) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, 4x4Stride2) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -101,8 +110,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, 4x4Stride2) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, 4x4Stride4) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -126,8 +138,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, 4x4Stride4) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, SmallKernelWithSamePadding) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -154,8 +169,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, SmallKernelWithSamePadding) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, SmallKernelWithValidPadding) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
   std::random_device random_device;
   auto rng = std::mt19937(random_device());
@@ -181,8 +199,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, SmallKernelWithValidPadding) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, StrideWithSamePadding) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -213,8 +234,11 @@ TEST(DynamicallyQuantizedTransposeConvTest, StrideWithSamePadding) {
 }
 
 TEST(DynamicallyQuantizedTransposeConvTest, StrideWithValidPadding) {
+  auto delegate_options = TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
-      xnnpack_delegate(TfLiteXNNPackDelegateCreate(nullptr),
+      xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
 
   std::random_device random_device;
@@ -248,6 +272,8 @@ TEST(DynamicallyQuantizedTransposeConvTest, MultiThreading) {
   TfLiteXNNPackDelegateOptions delegate_options =
       TfLiteXNNPackDelegateOptionsDefault();
   delegate_options.num_threads = 2;
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
       xnnpack_delegate(TfLiteXNNPackDelegateCreate(&delegate_options),
                        TfLiteXNNPackDelegateDelete);
@@ -282,6 +308,8 @@ TEST(DynamicallyQuantizedTransposeConvTest, MultiThreading) {
 TEST(DynamicallyQuantizedTransposeConvTest, WeightsCache) {
   TfLiteXNNPackDelegateOptions delegate_options =
       TfLiteXNNPackDelegateOptionsDefault();
+  delegate_options.flags |=
+      TFLITE_XNNPACK_DELEGATE_FLAG_ENABLE_SUBGRAPH_RESHAPING;
   std::unique_ptr<TfLiteXNNPackDelegateWeightsCache,
                   decltype(&TfLiteXNNPackDelegateWeightsCacheDelete)>
       weights_cache(TfLiteXNNPackDelegateWeightsCacheCreate(),

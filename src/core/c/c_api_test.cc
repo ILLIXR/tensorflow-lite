@@ -83,7 +83,7 @@ TEST(CApiSimple, SchemaVersion) {
 
 TEST(CApiSimple, Smoke) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -160,7 +160,7 @@ TEST(CApiSimple, Smoke) {
 TEST(CApiSimple, QuantizationParams) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
 
-      /testdata/add_quantized.bin");
+      "testdata/add_quantized.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreter* interpreter = TfLiteInterpreterCreate(model, nullptr);
@@ -220,7 +220,7 @@ TEST(CApiSimple, QuantizationParams) {
 
 TEST(CApiSimple, TfLiteInterpreterGetTensor) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -242,7 +242,7 @@ TEST(CApiSimple, TfLiteInterpreterGetTensor) {
             kTfLiteOk);
   ASSERT_EQ(TfLiteInterpreterAllocateTensors(interpreter), kTfLiteOk);
 
-  // The 'tensorflow/lite/testdata/add.bin' model uses model tensor
+  // The 'testdata/add.bin' model uses model tensor
   // at index 1 as the input tensor.
   TfLiteTensor* input_tensor = TfLiteInterpreterGetTensor(interpreter, 1);
   ASSERT_NE(input_tensor, nullptr);
@@ -295,7 +295,7 @@ TEST(CApiSimple, TfLiteInterpreterGetTensor) {
 #if !TFLITE_USE_OPAQUE_DELEGATE
 TEST(CApiSimple, Delegate) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   // Create and install a delegate instance.
   bool delegate_prepared = false;
@@ -322,7 +322,7 @@ TEST(CApiSimple, Delegate) {
 
 TEST(CApiSimple, DelegateExternal_GetExecutionPlan) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   // Create and install a delegate instance.
   bool delegate_prepared = false;
@@ -378,7 +378,7 @@ bool SubgraphIsDelegationSkippable(TfLiteOpaqueContext* context,
 
 TEST(CApiSimple, DelegateExternal_MarkSubgraphAsDelegationSkippable) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/2_subgraphs.bin");
+      "testdata/2_subgraphs.bin");
 
   // Create and install a delegate instance.
   bool delegate_prepared = false;
@@ -415,7 +415,7 @@ TEST(CApiSimple, DelegateExternal_MarkSubgraphAsDelegationSkippable) {
 #if !TFLITE_USE_OPAQUE_DELEGATE
 TEST(CApiSimple, DelegateFails) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   // Create and install a delegate instance.
   TfLiteDelegate delegate = TfLiteDelegateCreate();
@@ -481,7 +481,7 @@ TEST(CApiSimple, OpaqueDelegate_ReplaceNodeSubsetsWithDelegateKernels) {
   g_nodes_to_replace = new std::vector<int>();
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   // Create and install a delegate instance.
   DelegateState delegate_state{false};
@@ -524,7 +524,7 @@ TEST(CApiSimple, OpaqueDelegate_ReplaceNodeSubsetsWithDelegateKernels) {
   // The delegate should have been applied.
   EXPECT_TRUE(delegate_state.delegate_prepared);
   std::vector<int>& nodes_to_replace = *g_nodes_to_replace;
-  // We know that /testdata/add.bin" contains two
+  // We know that "testdata/add.bin" contains two
   // nodes, 0 and 1, and that 0 comes before 1 in the execution plan.
   EXPECT_EQ(nodes_to_replace.size(), 2);
   EXPECT_EQ(nodes_to_replace[0], 0);
@@ -541,7 +541,7 @@ TEST(CApiSimple, OpaqueDelegate_TransferOperatorOwnershipWithoutNodeToReplace) {
   g_nodes_to_replace = new std::vector<int>();
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   // Create and install a delegate instance.
   DelegateState delegate_state{false};
@@ -675,7 +675,7 @@ TEST(CApiSimple, InterpreterOptionsCopy) {
 
 TEST(CApiSimple, ErrorReporter) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
 
   // Install a custom error reporter into the interpreter by way of options.
@@ -703,7 +703,7 @@ TEST(CApiSimple, ModelCreateWithErrorReporter) {
   tflite::TestErrorReporter reporter;
 
   // valid model with error reporter
-  std::ifstream model_file(/testdata/add.bin");
+  std::ifstream model_file("testdata/add.bin");
   model_file.seekg(0, std::ios_base::end);
   std::vector<char> model_buffer(model_file.tellg());
   model_file.seekg(0, std::ios_base::beg);
@@ -730,7 +730,7 @@ TEST(CApiSimple, ModelCreateFromFileWithErrorReporter) {
 
   // valid model file with error reporter
   model = TfLiteModelCreateFromFileWithErrorReporter(
-      /testdata/add.bin", error_reporter,
+      "testdata/add.bin", error_reporter,
       &reporter);
   ASSERT_NE(model, nullptr);
   EXPECT_EQ(reporter.error_messages(), "");
@@ -815,7 +815,7 @@ TfLiteOperator* CreateReg() {
 
 TEST(CApiSimple, OpaqueDelegate_TfLiteOpaqueTensorGet) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   struct DelegateState {
     bool delegate_prepared = false;
@@ -923,7 +923,7 @@ TEST(CApiSimple, OpaqueContextGetNodeAndRegistration) {
   DelegatePrepareStatus delegate_state{false};
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   TfLiteOpaqueDelegateBuilder opaque_delegate_builder{};
   opaque_delegate_builder.data = &delegate_state;
@@ -1012,7 +1012,7 @@ TEST(CApiSimple, TfLiteOpaqueContextResizeTensor) {
   DelegatePrepareStatus delegate_state{false};
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
 
   TfLiteOpaqueDelegateBuilder opaque_delegate_builder{};
   opaque_delegate_builder.data = &delegate_state;
@@ -1061,7 +1061,7 @@ TEST(CApiSimple, TfLiteOpaqueContextResizeTensor) {
 }
 
 TEST(CApiSimple, ValidModel) {
-  std::ifstream model_file(/testdata/add.bin");
+  std::ifstream model_file("testdata/add.bin");
 
   model_file.seekg(0, std::ios_base::end);
   std::vector<char> model_buffer(model_file.tellg());
@@ -1077,7 +1077,7 @@ TEST(CApiSimple, ValidModel) {
 
 TEST(CApiSimple, ValidModelFromFile) {
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
   TfLiteModelDelete(model);
 }
@@ -1142,7 +1142,7 @@ TfLiteStatus FlexSinhEval(TfLiteOpaqueContext* context,
 
 TEST(CApiSimple, CustomOpSupport) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/custom_sinh.bin");
+      "testdata/custom_sinh.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteOperator* reg = TfLiteOperatorCreate(kTfLiteBuiltinCustom, "Sinh", 1);

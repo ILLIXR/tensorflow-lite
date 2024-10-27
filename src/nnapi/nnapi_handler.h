@@ -17,7 +17,7 @@ limitations under the License.
 
 #include <string>
 
-#include "tensorflow/core/platform/logging.h"
+#include "core/platform/logging.h"
 #include "nnapi/NeuralNetworksTypes.h"
 #include "nnapi/nnapi_implementation.h"
 

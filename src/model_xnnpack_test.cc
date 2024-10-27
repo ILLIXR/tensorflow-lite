@@ -31,7 +31,7 @@ namespace tflite {
 TEST(FloatModel, WithXnnpackDelegate) {
   // Note: this graph will be fully delegated by the XNNPACK delegate.
   auto model = FlatBufferModel::BuildFromFile(
-      /testdata/multi_add.bin");
+      "testdata/multi_add.bin");
   ASSERT_TRUE(model);
 
   std::unique_ptr<Interpreter> interpreter;
@@ -57,7 +57,7 @@ TEST(FloatModel, WithXnnpackDelegate) {
 TEST(FloatModel, DefaultXnnpackDelegateNotAllowed) {
   // Note: this graph will be fully delegated by the XNNPACK delegate.
   auto model = FlatBufferModel::BuildFromFile(
-      /testdata/multi_add.bin");
+      "testdata/multi_add.bin");
   ASSERT_TRUE(model);
 
   std::unique_ptr<Interpreter> interpreter;

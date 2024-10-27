@@ -204,7 +204,7 @@ table Tensor {
   is_variable:bool = false;
 
   // Parameters to encode a sparse tensor. See the example in
-  // tensorflow/lite/testdata/sparse_tensor.json.
+  // testdata/sparse_tensor.json.
   sparsity:SparsityParameters;  // Optional.
 
   // Encodes `shape` with unknown dimensions. Unknown dimensions are

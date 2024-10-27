@@ -86,7 +86,7 @@ class GPUCompatibilityList {
   // Returns the compatibility status as an enum (unknown/supported/unsupported)
   // of the provided device specified as a map of variables (properties).
   // Map keys should all be from here:
-  // tensorflow/lite/experimental/acceleration/compatibility/variables.h
+  // experimental/acceleration/compatibility/variables.h
   gpu::CompatibilityStatus GetStatus(
       std::map<std::string, std::string>& variables) const;
 

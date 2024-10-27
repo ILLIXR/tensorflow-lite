@@ -17,7 +17,6 @@ limitations under the License.
 #include <stdarg.h>
 
 #include "core/api/error_reporter.h"
-#include "logger.h"
 #include "minimal_logging.h"
 
 namespace tflite {

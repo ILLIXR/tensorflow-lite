@@ -22,7 +22,6 @@ limitations under the License.
 #include <gtest/gtest.h>
 #include "absl/strings/str_format.h"
 #include "array.h"
-#include "c/common.h"
 
 using ::testing::FloatNear;
 

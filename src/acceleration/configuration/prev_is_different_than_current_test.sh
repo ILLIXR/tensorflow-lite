@@ -16,7 +16,7 @@
 set -o nounset
 set -o errexit
 
-readonly DIR_PREFIX="third_party/tensorflow/lite/acceleration/configuration"
+readonly DIR_PREFIX="third_party/acceleration/configuration"
 readonly CURRENT_PROTO="$DIR_PREFIX/configuration.proto"
 readonly PREV_PROTO="$DIR_PREFIX/testdata/configuration.proto_prev"
 

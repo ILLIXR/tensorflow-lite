@@ -27,7 +27,7 @@ TEST(TfLiteSettingsJsonParserTest, SuccessWithValidXNNPackDelegateSettings) {
   TfLiteSettingsJsonParser parser;
 
   const TFLiteSettings* tflite_settings = parser.Parse(
-      /delegates/utils/experimental/"
+      "delegates/utils/experimental/"
       "stable_delegate/test_xnnpack_settings.json");
 
   EXPECT_NE(parser.GetBufferPointer(), nullptr);
@@ -41,7 +41,7 @@ TEST(TfLiteSettingsJsonParserTest, SuccessWithValidXNNPackDelegateSettings) {
 TEST(TfLiteSettingsJsonParserTest, GetBufferPointerReturnsValidBufferPointers) {
   TfLiteSettingsJsonParser parser;
   parser.Parse(
-      /delegates/utils/experimental/"
+      "delegates/utils/experimental/"
       "stable_delegate/test_xnnpack_settings.json");
   const uint8_t* buffer_pointer = parser.GetBufferPointer();
 
@@ -61,7 +61,7 @@ TEST(TfLiteSettingsJsonParserTest, FailedToParseInvalidSettings) {
   TfLiteSettingsJsonParser parser;
 
   EXPECT_EQ(
-      parser.Parse(/tools/delegates/experimental/"
+      parser.Parse("tools/delegates/experimental/"
                    "stable_delegate/test_invalid_settings.json"),
       nullptr);
   EXPECT_EQ(parser.GetBufferPointer(), nullptr);

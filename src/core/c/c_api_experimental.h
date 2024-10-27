@@ -385,7 +385,7 @@ TFL_CAPI_EXPORT extern TfLiteStatus TfLiteSignatureRunnerCancel(
     TfLiteSignatureRunner* signature_runner);
 
 // Forward declaration, to avoid need for dependency on
-// tensorflow/lite/profiling/telemetry/profiler.h.
+// profiling/telemetry/profiler.h.
 struct TfLiteTelemetryProfilerStruct;
 
 /// Registers the telemetry profiler to the interpreter.

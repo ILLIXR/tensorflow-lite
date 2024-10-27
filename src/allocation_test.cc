@@ -44,7 +44,7 @@ TEST(MMAPAllocation, TestValidFile) {
 
   TestErrorReporter error_reporter;
   MMAPAllocation allocation(
-      /testdata/empty_model.bin", &error_reporter);
+      "testdata/empty_model.bin", &error_reporter);
 
   ASSERT_TRUE(allocation.valid());
   EXPECT_GT(allocation.fd(), 0);
@@ -69,7 +69,7 @@ TEST(MMAPAllocation, TestInvalidSizeAndOffset) {
   }
 
   int fd =
-      open(/testdata/empty_model.bin", O_RDONLY);
+      open("testdata/empty_model.bin", O_RDONLY);
   ASSERT_GT(fd, 0);
 
   struct stat fd_stat;
@@ -104,7 +104,7 @@ TEST(MMAPAllocation, TestValidFileDescriptor) {
   }
 
   int fd =
-      open(/testdata/empty_model.bin", O_RDONLY);
+      open("testdata/empty_model.bin", O_RDONLY);
   ASSERT_GT(fd, 0);
 
   TestErrorReporter error_reporter;
@@ -123,7 +123,7 @@ TEST(MMAPAllocation, TestValidFileDescriptorWithOffset) {
   }
 
   int fd =
-      open(/testdata/empty_model.bin", O_RDONLY);
+      open("testdata/empty_model.bin", O_RDONLY);
   ASSERT_GT(fd, 0);
 
   struct stat fd_stat;

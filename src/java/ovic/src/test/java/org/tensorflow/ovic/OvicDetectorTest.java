@@ -41,7 +41,7 @@ public final class OvicDetectorTest {
   private ByteBuffer testImage = null;
 
   private static final String LABELS_PATH =
-      /java/ovic/src/testdata/coco_labels.txt";
+      "java/ovic/src/testdata/coco_labels.txt";
   private static final String MODEL_PATH =
       "external/tflite_ovic_testdata/quantized_detect.lite";
   private static final String TEST_IMAGE_PATH =

@@ -17,7 +17,7 @@ limitations under the License.
 
 #include "core/c/common.h"
 #include "delegates/coreml/builders/op_builder.h"
-#import /delegates/coreml/coreml_executor.h"
+#import "delegates/coreml/coreml_executor.h"
 
 namespace tflite {
 namespace delegates {

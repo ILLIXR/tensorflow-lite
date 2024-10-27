@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-#import /delegates/coreml/coreml_executor.h"
+#import "delegates/coreml/coreml_executor.h"
 
 #import <CoreML/CoreML.h>
 #import <Foundation/Foundation.h>

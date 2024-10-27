@@ -18,7 +18,7 @@ package toco;
 import "tensorflow/compiler/mlir/lite/debug/debug_options.proto";
 import "tensorflow/compiler/mlir/quantization/stablehlo/quantization_config.proto";
 import "tensorflow/compiler/mlir/quantization/stablehlo/quantization_options.proto";
-import /toco/types.proto";
+import "toco/types.proto";
 
 // Supported I/O file formats. Some formats may be input-only or output-only.
 enum FileFormat {
@@ -28,7 +28,7 @@ enum FileFormat {
   TENSORFLOW_GRAPHDEF = 1;
 
   // Tensorflow's mobile inference model.
-  // tensorflow/lite/schema/schema.fbs
+  // schema/schema.fbs
   TFLITE = 2;
 
   // GraphViz

@@ -27,7 +27,7 @@ namespace tflite {
 // appropriate delegate is linked into the client.
 TEST(FlexModel, WithFlexDelegate) {
   auto model = FlatBufferModel::BuildFromFile(
-      /testdata/multi_add_flex.bin");
+      "testdata/multi_add_flex.bin");
   ASSERT_TRUE(model);
 
   std::unique_ptr<Interpreter> interpreter;

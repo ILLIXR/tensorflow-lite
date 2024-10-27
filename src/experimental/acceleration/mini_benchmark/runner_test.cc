@@ -24,8 +24,8 @@ limitations under the License.
 
 #include <gtest/gtest.h>
 #include "flatbuffers/flatbuffers.h"  // from @flatbuffers
-#include "tensorflow/compiler/mlir/lite/schema/mutable/schema_generated.h"
 #include "allocation.h"
+#include "schema/mutable/schema_generated.h"
 #include "stderr_reporter.h"
 #ifdef __ANDROID__
 #include "experimental/acceleration/mini_benchmark/embedded_runner_executable.h"

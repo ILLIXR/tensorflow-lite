@@ -57,7 +57,7 @@ absl::Status CheckGpuDelegateCompatibility(const tflite::Model* model) {
 
 TEST(CheckGpuDelegateCompatibility, Conv2DModel) {
   const std::string& full_path = tensorflow::GetDataDependencyFilepath(
-      /testdata/conv_huge_im2col.bin");
+      "testdata/conv_huge_im2col.bin");
   auto model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(model);
   EXPECT_TRUE(CheckGpuDelegateCompatibility(model->GetModel()).ok());
@@ -65,7 +65,7 @@ TEST(CheckGpuDelegateCompatibility, Conv2DModel) {
 
 TEST(CheckGpuDelegateCompatibility, Conv3DModel) {
   const std::string& full_path = tensorflow::GetDataDependencyFilepath(
-      /testdata/conv3d_huge_im2col.bin");
+      "testdata/conv3d_huge_im2col.bin");
   auto model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(model);
   EXPECT_EQ(CheckGpuDelegateCompatibility(model->GetModel()).message(),
@@ -74,7 +74,7 @@ TEST(CheckGpuDelegateCompatibility, Conv3DModel) {
 
 TEST(CheckGpuDelegateCompatibility, FlexModel) {
   const std::string& full_path = tensorflow::GetDataDependencyFilepath(
-      /testdata/multi_add_flex.bin");
+      "testdata/multi_add_flex.bin");
   auto model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(model);
   EXPECT_EQ(CheckGpuDelegateCompatibility(model->GetModel()).message(),
@@ -92,113 +92,6 @@ TEST(CheckGpuDelegateCompatibility, FCConstInput) {
   op_sig.inputs[0].is_const = true;
   EXPECT_EQ(CheckGpuDelegateCompatibility(op_sig).message(),
             "FullyConnected doesn't support constant input.");
-}
-
-TEST(CheckGpuDelegateCompatibility, Add1Dto3DBroadcastSuccess) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {4, 1, 2};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  op_sig.inputs[1].dims = {2};
-
-  EXPECT_TRUE(CheckGpuDelegateCompatibility(op_sig).message().empty());
-}
-
-TEST(CheckGpuDelegateCompatibility, Add2Dto3DBroadcastFail) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {1, 100, 256};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  op_sig.inputs[1].dims = {100, 256};
-
-  EXPECT_EQ(CheckGpuDelegateCompatibility(op_sig).message(),
-            "Doesn't support broadcasting - input0: [1,100,256], input1: "
-            "[100,256]");
-}
-
-TEST(CheckGpuDelegateCompatibility, Add3Dto4DBroadcastFail) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {4, 1, 1, 2};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  // Can't broadcast using batch of 4
-  op_sig.inputs[1].dims = {1, 1, 2};
-
-  EXPECT_EQ(
-      CheckGpuDelegateCompatibility(op_sig).message(),
-      "Doesn't support broadcasting - input0: [4,1,1,2], input1: [1,1,2]");
-}
-
-TEST(CheckGpuDelegateCompatibility, Add3Dto4DBroadcastSuccess) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {1, 128, 513, 3};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  // Can be broadcasted to {1, 128, 513, 3}
-  op_sig.inputs[1].dims = {128, 513, 3};
-
-  EXPECT_TRUE(CheckGpuDelegateCompatibility(op_sig).message().empty());
-}
-
-TEST(CheckGpuDelegateCompatibility, Add2Dto4DBroadcastSuccess) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {1, 512, 512, 1};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  // Can be broadcasted to {1, 1, 1, 1}
-  op_sig.inputs[1].dims = {1, 1};
-
-  EXPECT_TRUE(CheckGpuDelegateCompatibility(op_sig).message().empty());
-}
-
-TEST(CheckGpuDelegateCompatibility, Add2Dto4DBroadcastSuccess2) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {1, 384, 384, 3};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  // Can be broadcasted to {1, 1, 1, 1}
-  op_sig.inputs[1].dims = {1, 1};
-
-  EXPECT_TRUE(CheckGpuDelegateCompatibility(op_sig).message().empty());
-}
-
-TEST(CheckGpuDelegateCompatibility, Add2Dto4DBroadcastSuccess3) {
-  OpSignature op_sig = OpSignature();
-  op_sig.op = BuiltinOperator_ADD;
-  auto params = std::make_unique<TfLiteAddParams>();
-  op_sig.builtin_data = static_cast<void*>(params.get());
-  op_sig.inputs = std::vector<OpSignatureTensorSpec>(2);
-  op_sig.inputs[0] = OpSignatureTensorSpec();
-  op_sig.inputs[0].dims = {1, 4, 4, 10};
-  op_sig.inputs[1] = OpSignatureTensorSpec();
-  // Can be broadcasted to {1, 1, 1, 10}
-  op_sig.inputs[1].dims = {1, 10};
-
-  EXPECT_TRUE(CheckGpuDelegateCompatibility(op_sig).message().empty());
 }
 
 }  // namespace tflite

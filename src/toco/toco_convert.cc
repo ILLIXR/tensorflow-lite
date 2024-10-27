@@ -59,7 +59,7 @@ void ReadInputData(const ParsedTocoFlags& parsed_toco_flags,
 
   // Ensure savedmodel_directory is not set.
   QCHECK(!parsed_toco_flags.savedmodel_directory.specified())
-      << "Use `tensorflow/lite/python/tflite_convert` script with "
+      << "Use `python/tflite_convert` script with "
       << "SavedModel directories.\n";
 
   // Checks the input file permissions and reads the contents.

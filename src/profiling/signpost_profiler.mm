@@ -54,7 +54,7 @@ class SignpostProfiler : public tflite::Profiler {
       // We encode the signpost message as tag@event_metadata1/event_metadata2.
       // In case of OPERATOR_INVOKE_EVENT, the event message will be
       // op_name@node_index/subgraph_index. See the macro TFLITE_SCOPED_TAGGED_OPERATOR_PROFILE
-      // defined in tensorflow/lite/core/api/profiler.h for details.
+      // defined in core/api/profiler.h for details.
       msg_buf_.str("");  // reset the buffer.
       msg_buf_ << tag << "@" << event_metadata1 << "/" << event_metadata2;
       std::string msg_str = msg_buf_.str();

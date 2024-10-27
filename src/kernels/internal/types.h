@@ -114,7 +114,7 @@ enum class FullyConnectedWeightsFormat : uint8_t {
   // bytes before using them in signed arithmetic, see this file for more
   // explanations on the 'signed int8_t trick' in matrix multiplication kernels:
   //
-  //   tensorflow/lite/toco/graph_transformations/ensure_uint8_weights_safe_for_fast_int8_kernels.cc
+  //   toco/graph_transformations/ensure_uint8_weights_safe_for_fast_int8_kernels.cc
   //
   kShuffled4x16Int8,
 };

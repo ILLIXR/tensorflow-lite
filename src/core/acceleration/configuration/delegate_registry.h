@@ -49,7 +49,7 @@ namespace tflite {
 namespace delegates {
 
 // Same w/ Interpreter::TfLiteDelegatePtr to avoid pulling
-// tensorflow/lite/interpreter.h dependency
+// interpreter.h dependency
 using TfLiteDelegatePtr =
     std::unique_ptr<TfLiteDelegate, void (*)(TfLiteDelegate*)>;
 

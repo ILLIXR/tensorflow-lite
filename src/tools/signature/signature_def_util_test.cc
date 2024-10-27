@@ -37,7 +37,7 @@ using tensorflow::Status;
 
 constexpr char kSignatureInput[] = "input";
 constexpr char kSignatureOutput[] = "output";
-constexpr char kTestFilePath[] = /testdata/add.bin";
+constexpr char kTestFilePath[] = "testdata/add.bin";
 
 class SimpleSignatureDefUtilTest : public testing::Test {
  protected:

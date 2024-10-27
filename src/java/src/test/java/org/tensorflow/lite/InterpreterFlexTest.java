@@ -34,7 +34,7 @@ import org.tensorflow.lite.nnapi.NnApiDelegate;
 public final class InterpreterFlexTest {
 
   private static final ByteBuffer FLEX_MODEL_BUFFER =
-      TestUtils.getTestFileAsBuffer(/testdata/multi_add_flex.bin");
+      TestUtils.getTestFileAsBuffer("testdata/multi_add_flex.bin");
 
   /** Smoke test validating that flex model loading works when the flex delegate is used. */
   @Test

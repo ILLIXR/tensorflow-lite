@@ -10,10 +10,10 @@
 #include "third_party/absl/strings/substitute.h"
 #include "third_party/absl/types/any.h"
 #include "mediapipe/util/tflite/gpu/common/mediapipe/landmarks_to_transform_matrix.h"
-#include "third_party/tensorflow/lite/delegates/gpu/common/shape.h"
-#include "third_party/tensorflow/lite/delegates/gpu/common/status.h"
-#include "third_party/tensorflow/lite/delegates/gpu/common/types.h"
-#include "third_party/tensorflow/lite/delegates/gpu/common/util.h"
+#include "third_party/delegates/gpu/common/shape.h"
+#include "third_party/delegates/gpu/common/status.h"
+#include "third_party/delegates/gpu/common/types.h"
+#include "third_party/delegates/gpu/common/util.h"
 
 namespace tflite {
 namespace gpu {

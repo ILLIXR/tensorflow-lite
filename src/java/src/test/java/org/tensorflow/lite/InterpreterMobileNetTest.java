@@ -38,11 +38,11 @@ public final class InterpreterMobileNetTest {
 
   private static final ByteBuffer MOBILENET_FLOAT_MODEL_BUFFER =
       TestUtils.getTestFileAsBuffer(
-          /java/demo/app/src/main/assets/mobilenet_v1_1.0_224.tflite");
+          "java/demo/app/src/main/assets/mobilenet_v1_1.0_224.tflite");
 
   private static final ByteBuffer MOBILENET_QUANTIZED_MODEL_BUFFER =
       TestUtils.getTestFileAsBuffer(
-          /java/demo/app/src/main/assets/mobilenet_v1_1.0_224_quant.tflite");
+          "java/demo/app/src/main/assets/mobilenet_v1_1.0_224_quant.tflite");
 
   @Test
   public void testMobileNet() {
@@ -83,7 +83,7 @@ public final class InterpreterMobileNetTest {
   private static void runMobileNetFloatTest(Interpreter.Options options) {
     ByteBuffer img =
         TestUtils.getTestImageAsFloatByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
     float[][] labels = new float[1][1001];
     try (Interpreter interpreter = new Interpreter(MOBILENET_FLOAT_MODEL_BUFFER, options)) {
       interpreter.run(img, labels);
@@ -100,7 +100,7 @@ public final class InterpreterMobileNetTest {
   private static void runMobileNetQuantizedTest(Interpreter.Options options) {
     ByteBuffer img =
         TestUtils.getTestImageAsByteBuffer(
-            /java/src/testdata/grace_hopper_224.jpg");
+            "java/src/testdata/grace_hopper_224.jpg");
     byte[][] labels = new byte[1][1001];
     try (Interpreter interpreter = new Interpreter(MOBILENET_QUANTIZED_MODEL_BUFFER, options)) {
       interpreter.run(img, labels);

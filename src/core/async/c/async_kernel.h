@@ -16,7 +16,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_CORE_ASYNC_C_ASYNC_KERNEL_H_
 
 // TODO(b/270731824): Add full documentation / tests for this header.
-// Please reference to tensorflow/lite/core/async/async_kernel_internal.h
+// Please reference to core/async/async_kernel_internal.h
 // for documentation.
 
 #include <stdbool.h>

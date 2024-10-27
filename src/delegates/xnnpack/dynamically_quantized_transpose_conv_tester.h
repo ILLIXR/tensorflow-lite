@@ -183,7 +183,11 @@ class DynamicallyQuantizedTransposeConvTester {
   std::vector<int8_t> GenerateKernelData() const;
   std::vector<float> GenerateBiasData() const;
   std::vector<float> GenerateKernelScaleData() const;
-  std::vector<char> CreateTfLiteModel(
+  std::vector<char> CreateDRQTfLiteModel(
+      const std::vector<int8_t>& filter_data,
+      const std::vector<float>& bias_data,
+      const std::vector<float>& kernel_scale) const;
+  std::vector<char> CreateDequantizeTfLiteModel(
       const std::vector<int8_t>& filter_data,
       const std::vector<float>& bias_data,
       const std::vector<float>& kernel_scale) const;

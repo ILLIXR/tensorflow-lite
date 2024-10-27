@@ -28,7 +28,7 @@ namespace {
 
 constexpr char kImagePreprocessingStageName[] = "inception_preprocessing_stage";
 constexpr char kTestImage[] =
-    /tools/evaluation/stages/testdata/"
+    "tools/evaluation/stages/testdata/"
     "grace_hopper.jpg";
 constexpr int kImageDim = 224;
 

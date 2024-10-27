@@ -575,7 +575,7 @@ TfLiteStatus Invoke(TfLiteOpaqueContext* context, TfLiteOpaqueNode* node) {
 
 TEST(TestTfLiteOpaqueNode, CustomOpWithSetAndGetTemporaries) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/custom_sinh.bin");
+      "testdata/custom_sinh.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteOperator* reg = TfLiteOperatorCreate(kTfLiteBuiltinCustom, "Sinh", 1);

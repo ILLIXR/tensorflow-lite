@@ -22,13 +22,13 @@ limitations under the License.
 #include "absl/memory/memory.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_split.h"
-#include "tensorflow/compiler/mlir/lite/schema/mutable/schema_generated.h"
-#include "tensorflow/compiler/mlir/lite/schema/schema_generated.h"
 #include "tensorflow/core/platform/logging.h"
 #include "builtin_op_data.h"
 #include "core/c/builtin_op_data.h"
 #include "core/c/c_api_types.h"
 #include "kernels/internal/compatibility.h"
+#include "schema/mutable/schema_generated.h"
+#include "schema/schema_generated.h"
 #include "schema/schema_utils.h"
 
 namespace tflite {

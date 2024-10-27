@@ -55,13 +55,13 @@ static TfLiteRegistration* RegisterDummyCustomOp(const char* custom_name) {
 }
 
 const char* model_with_custom_op_and_init_data_filename =
-    /testdata/"
+    "testdata/"
     "test_custom_node_with_init_data.bin";
 
 TEST(TestOpaqueDelegate, AddDelegate) {
   std::unique_ptr<tflite::FlatBufferModel> model =
       tflite::FlatBufferModel::BuildFromFile(
-          /testdata/add.bin");
+          "testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteOpaqueDelegateBuilder opaque_delegate_builder{};
@@ -196,7 +196,7 @@ class TestOpaqueMacros : public ::testing::Test {
   }
   void SetUp() override {
     model_ = tflite::FlatBufferModel::BuildFromFile(
-        /testdata/add.bin", &reporter_);
+        "testdata/add.bin", &reporter_);
     ASSERT_NE(model_, nullptr);
   }
   void TearDown() override { TfLiteOpaqueDelegateDelete(opaque_delegate_); }
@@ -224,7 +224,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_REPORTS) {
   };
   EnsureDelegationFails();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*false was not true.*");
 #ifndef TF_LITE_STRIP_ERROR_STRINGS
   EXPECT_THAT(reporter_.error_messages(), ContainsRegex(txt_regex));
@@ -241,7 +241,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_SILENT) {
   };
   EnsureDelegationSucceeds();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*was not true.*");
   EXPECT_THAT(reporter_.error_messages(), Not(ContainsRegex(txt_regex)));
 }
@@ -254,7 +254,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_EQ_REPORTS) {
   };
   EnsureDelegationFails();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*true != false.*");
 #ifndef TF_LITE_STRIP_ERROR_STRINGS
   EXPECT_THAT(reporter_.error_messages(), ContainsRegex(txt_regex));
@@ -271,7 +271,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_EQ_SILENT) {
   };
   EnsureDelegationSucceeds();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.* != *");
   EXPECT_THAT(reporter_.error_messages(), Not(ContainsRegex(txt_regex)));
 }
@@ -284,7 +284,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_MSG_REPORTS) {
   };
   EnsureDelegationFails();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*custom error msg.*");
 #ifndef TF_LITE_STRIP_ERROR_STRINGS
   EXPECT_THAT(reporter_.error_messages(), ContainsRegex(txt_regex));
@@ -301,7 +301,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_MSG_SILENT) {
   };
   EnsureDelegationSucceeds();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*");
   EXPECT_THAT(reporter_.error_messages(), Not(ContainsRegex(txt_regex)));
 }
@@ -315,7 +315,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_TYPES_EQ_REPORTS) {
   };
   EnsureDelegationFails();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*kTfLiteFloat32 != kTfLiteInt32.*");
 #ifndef TF_LITE_STRIP_ERROR_STRINGS
   EXPECT_THAT(reporter_.error_messages(), ContainsRegex(txt_regex));
@@ -333,7 +333,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_TYPES_EQ_SILENT) {
   };
   EnsureDelegationSucceeds();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*!=.*");
   EXPECT_THAT(reporter_.error_messages(), Not(ContainsRegex(txt_regex)));
 }
@@ -346,7 +346,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_NEAR_REPORTS) {
   };
   EnsureDelegationFails();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*1 not near 10.*");
 #ifndef TF_LITE_STRIP_ERROR_STRINGS
   EXPECT_THAT(reporter_.error_messages(), ContainsRegex(txt_regex));
@@ -363,7 +363,7 @@ TEST_F(TestOpaqueMacros, TF_LITE_OPAQUE_ENSURE_NEAR_SILENT) {
   };
   EnsureDelegationSucceeds();
   const std::string txt_regex(
-      ".*tensorflow/lite/delegates/"
+      ".*delegates/"
       "opaque_delegate_test\\.cc.*10 not near 10.*");
   EXPECT_THAT(reporter_.error_messages(), Not(ContainsRegex(txt_regex)));
 }

@@ -25,6 +25,7 @@ limitations under the License.
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include "core/c/common.h"
+#include "testing/util.h"
 
 namespace tflite {
 namespace {

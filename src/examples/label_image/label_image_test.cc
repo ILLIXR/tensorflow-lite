@@ -27,7 +27,7 @@ namespace label_image {
 
 TEST(LabelImageTest, GraceHopper) {
   std::string lena_file =
-      /examples/label_image/testdata/"
+      "examples/label_image/testdata/"
       "grace_hopper.bmp";
   int height, width, channels;
   Settings s;

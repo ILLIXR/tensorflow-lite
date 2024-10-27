@@ -30,7 +30,7 @@ namespace tflite {
 namespace tools {
 
 // Same w/ Interpreter::TfLiteDelegatePtr to avoid pulling
-// tensorflow/lite/interpreter.h dependency
+// interpreter.h dependency
 using TfLiteDelegatePtr =
     std::unique_ptr<TfLiteOpaqueDelegate, void (*)(TfLiteOpaqueDelegate*)>;
 

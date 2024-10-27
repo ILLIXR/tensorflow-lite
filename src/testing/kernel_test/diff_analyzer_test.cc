@@ -29,7 +29,7 @@ namespace {
 TEST(DiffAnalyzerTest, ZeroDiff) {
   DiffAnalyzer diff_analyzer;
   string filename =
-      /testing/kernel_test/testdata/test_input.csv";
+      "testing/kernel_test/testdata/test_input.csv";
   ASSERT_EQ(diff_analyzer.ReadFiles(filename, filename), kTfLiteOk);
 
   string output_file =

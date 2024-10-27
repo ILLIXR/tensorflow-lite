@@ -15,8 +15,6 @@ limitations under the License.
 
 #include "delegates/gpu/common/flops_util.h"
 
-#include "delegates/gpu/common/shape.h"
-
 namespace tflite {
 namespace gpu {
 

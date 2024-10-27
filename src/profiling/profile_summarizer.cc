@@ -121,7 +121,7 @@ void ProfileSummarizer::ProcessProfiles(
       // When recording an OPERATOR_INVOKE_EVENT, we have recorded the node
       // index as event_metadata. See the macro
       // TFLITE_SCOPED_TAGGED_OPERATOR_PROFILE defined in
-      // tensorflow/lite/core/api/profiler.h for details.
+      // core/api/profiler.h for details.
       const auto node_index = event->event_metadata;
 
       const auto op_details =

@@ -88,7 +88,7 @@ TfLiteDelegate* CreateDummyDelegateFromOptions(
 extern "C" {
 
 // Defines two symbols that need to be exported to use the TFLite external
-// delegate. See tensorflow/lite/delegates/external for details.
+// delegate. See delegates/external for details.
 extern TFL_EXTERNAL_DELEGATE_EXPORT TfLiteDelegate*
 tflite_plugin_create_delegate(const char* const* options_keys,
                               const char* const* options_values,

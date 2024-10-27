@@ -54,7 +54,7 @@ TEST_F(TestDelegate, TestDataAddBin_SingleInputSingleOutput_FullyDelegated) {
   // Create the model and the interpreter
   //
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
   ASSERT_NE(options, nullptr);
@@ -131,7 +131,7 @@ TEST(DelegateTest,
           std::make_unique<example::SampleStableDelegate>());
 
   TfLiteModel* model =
-      TfLiteModelCreateFromFile(/testdata/add.bin");
+      TfLiteModelCreateFromFile("testdata/add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -208,7 +208,7 @@ TEST(DelegateTest, TestDataMultiAddBin_MultiInputMultiOutput_FullyDelegated) {
           std::make_unique<example::SampleStableDelegate>());
 
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/multi_add.bin");
+      "testdata/multi_add.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
@@ -426,7 +426,7 @@ TEST_F(TestDelegate, SetBufferHandle) {
   // Load a model and build an interpreter.
   std::unique_ptr<tflite::FlatBufferModel> model =
       tflite::FlatBufferModel::BuildFromFile(
-          /testdata/add.bin");
+          "testdata/add.bin");
   ASSERT_NE(model, nullptr);
   tflite::ops::builtin::BuiltinOpResolver resolver;
   tflite::InterpreterBuilder builder(*model, resolver);
@@ -496,7 +496,7 @@ TEST(DelegateTest,
       TfLiteOpaqueDelegateFactory::Create(
           std::make_unique<example::SampleStableDelegate>());
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/conv_huge_im2col.bin");
+      "testdata/conv_huge_im2col.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();

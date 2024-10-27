@@ -136,7 +136,7 @@ class StubTfLiteContext : public TfLiteContext {
 
 TEST(GetOpSignature, FlatBufferModel) {
   const std::string& full_path =
-      tensorflow::GetDataDependencyFilepath(/testdata/add.bin");
+      tensorflow::GetDataDependencyFilepath("testdata/add.bin");
   auto fb_model = FlatBufferModel::BuildFromFile(full_path.data());
   ASSERT_TRUE(fb_model);
   auto model = fb_model->GetModel();
@@ -177,7 +177,7 @@ TEST(GetOpSignature, FlatBufferModel) {
   free(op_sig.builtin_data);
 
   const std::string& full_path3 = tensorflow::GetDataDependencyFilepath(
-      /testdata/multi_signatures.bin");
+      "testdata/multi_signatures.bin");
   auto fb_model3 = FlatBufferModel::BuildFromFile(full_path3.data());
   ASSERT_TRUE(fb_model3);
   auto model3 = fb_model3->GetModel();

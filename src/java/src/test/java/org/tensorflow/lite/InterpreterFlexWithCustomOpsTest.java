@@ -31,7 +31,7 @@ import org.tensorflow.lite.flex.FlexDelegate;
 public final class InterpreterFlexWithCustomOpsTest {
 
   private static final ByteBuffer DOUBLE_MODEL_BUFFER =
-      TestUtils.getTestFileAsBuffer(/testdata/double_flex.bin");
+      TestUtils.getTestFileAsBuffer("testdata/double_flex.bin");
 
   /** Smoke test validating that flex model with a user's defined TF op. */
   @Test

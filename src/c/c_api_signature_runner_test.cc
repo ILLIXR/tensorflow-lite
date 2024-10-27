@@ -26,7 +26,7 @@ namespace {
 
 TEST(SignatureRunnerTest, TestMultiSignatures) {
   TfLiteModel* model = TfLiteModelCreateFromFile(
-      /testdata/multi_signatures.bin");
+      "testdata/multi_signatures.bin");
   ASSERT_NE(model, nullptr);
 
   TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();

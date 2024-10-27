@@ -92,7 +92,7 @@ TEST(TfDriverTest, SimpleTest) {
       new TfDriver({"a", "b", "c", "d"}, {"float", "float", "float", "float"},
                    {"1,8,8,3", "1,8,8,3", "1,8,8,3", "1,8,8,3"}, {"x", "y"}));
 
-  runner->LoadModel(/testdata/multi_add.pb");
+  runner->LoadModel("testdata/multi_add.pb");
   EXPECT_TRUE(runner->IsValid()) << runner->GetErrorMessage();
 
   for (const auto& i : {"a", "b", "c", "d"}) {

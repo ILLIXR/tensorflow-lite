@@ -33,31 +33,31 @@ import org.junit.runners.JUnit4;
 public final class NativeInterpreterWrapperTest {
 
   private static final String FLOAT_MODEL_PATH =
-      /java/src/testdata/add.bin";
+      "java/src/testdata/add.bin";
 
   private static final String INT_MODEL_PATH =
-      /java/src/testdata/int32.bin";
+      "java/src/testdata/int32.bin";
 
   private static final String LONG_MODEL_PATH =
-      /java/src/testdata/int64.bin";
+      "java/src/testdata/int64.bin";
 
   private static final String BYTE_MODEL_PATH =
-      /java/src/testdata/uint8.bin";
+      "java/src/testdata/uint8.bin";
 
   private static final String STRING_MODEL_PATH =
-      /java/src/testdata/string.bin";
+      "java/src/testdata/string.bin";
 
   private static final String STRING_SCALAR_MODEL_PATH =
-      /java/src/testdata/string_scalar.bin";
+      "java/src/testdata/string_scalar.bin";
 
   private static final String INVALID_MODEL_PATH =
-      /java/src/testdata/invalid_model.bin";
+      "java/src/testdata/invalid_model.bin";
 
   private static final String MODEL_WITH_CUSTOM_OP_PATH =
-      /java/src/testdata/with_custom_op.lite";
+      "java/src/testdata/with_custom_op.lite";
 
   private static final String NONEXISTING_MODEL_PATH =
-      /java/src/testdata/nonexisting_model.bin";
+      "java/src/testdata/nonexisting_model.bin";
 
   @Before
   public void setUp() {

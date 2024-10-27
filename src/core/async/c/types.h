@@ -24,7 +24,7 @@ typedef struct TfLiteAsyncKernel TfLiteAsyncKernel;
 
 /// Opaque type for TfLiteExecutionTask.
 ///
-/// See tensorflow/lite/core/async/c/task.h
+/// See core/async/c/task.h
 /// NOTE: TfLiteExecutionTask is NOT thread-safe.
 typedef struct TfLiteExecutionTask TfLiteExecutionTask;
 

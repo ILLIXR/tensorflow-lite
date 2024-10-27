@@ -17,8 +17,8 @@
 set -o errexit
 set -o nounset
 
-readonly benchmark_tool=tensorflow/lite/tools/benchmark/benchmark_model
-readonly external_delegate=tensorflow/lite/delegates/utils/dummy_delegate/dummy_external_delegate.so
+readonly benchmark_tool=tools/benchmark/benchmark_model
+readonly external_delegate=delegates/utils/dummy_delegate/dummy_external_delegate.so
 readonly model=external/tflite_mobilenet_float/mobilenet_v1_1.0_224.tflite
 readonly benchmark_log=/tmp/benchmark.out
 

@@ -26,7 +26,7 @@ OUTPUT_HEADER_FILE=${TEST_TMPDIR}/output_header.h
 
 # Needed for copybara compatibility.
 SCRIPT_BASE_DIR=/org_"tensor"flow
-${TEST_SRCDIR}${SCRIPT_BASE_DIR}/tensorflow/lite/python/convert_file_to_c_source \
+${TEST_SRCDIR}${SCRIPT_BASE_DIR}/python/convert_file_to_c_source \
   --input_tflite_file="${INPUT_FILE}" \
   --output_source_file="${OUTPUT_SOURCE_FILE}" \
   --output_header_file="${OUTPUT_HEADER_FILE}" \

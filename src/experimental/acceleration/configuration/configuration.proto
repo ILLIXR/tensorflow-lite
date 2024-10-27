@@ -2,4 +2,4 @@ syntax = "proto2";
 
 package tflite.proto;
 
-import public /acceleration/configuration/configuration.proto";
+import public "acceleration/configuration/configuration.proto";

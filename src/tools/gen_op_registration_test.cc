@@ -43,7 +43,7 @@ TEST_F(GenOpRegistrationTest, TestNonExistentFiles) {
 }
 
 TEST_F(GenOpRegistrationTest, TestModels) {
-  ReadOps(/testdata/test_model.bin");
+  ReadOps("testdata/test_model.bin");
   RegisteredOpMap builtin_expected{{"CONV_2D", {1, 1}}};
   RegisteredOpMap custom_expected{{"testing_op", {1, 1}}};
   EXPECT_THAT(builtin_ops_, ElementsAreArray(builtin_expected));
@@ -51,7 +51,7 @@ TEST_F(GenOpRegistrationTest, TestModels) {
 }
 
 TEST_F(GenOpRegistrationTest, TestVersionedModels) {
-  ReadOps(/testdata/test_model_versioned_ops.bin");
+  ReadOps("testdata/test_model_versioned_ops.bin");
   RegisteredOpMap builtin_expected{{"CONV_2D", {3, 3}}};
   RegisteredOpMap custom_expected{{"testing_op", {2, 2}}};
   EXPECT_THAT(builtin_ops_, ElementsAreArray(builtin_expected));
@@ -59,8 +59,8 @@ TEST_F(GenOpRegistrationTest, TestVersionedModels) {
 }
 
 TEST_F(GenOpRegistrationTest, TestBothModels) {
-  ReadOps(/testdata/test_model.bin");
-  ReadOps(/testdata/test_model_versioned_ops.bin");
+  ReadOps("testdata/test_model.bin");
+  ReadOps("testdata/test_model_versioned_ops.bin");
   RegisteredOpMap builtin_expected{{"CONV_2D", {1, 3}}};
   RegisteredOpMap custom_expected{{"testing_op", {1, 2}}};
   EXPECT_THAT(builtin_ops_, ElementsAreArray(builtin_expected));
@@ -68,19 +68,19 @@ TEST_F(GenOpRegistrationTest, TestBothModels) {
 }
 
 TEST_F(GenOpRegistrationTest, TestEmptyModels) {
-  ReadOps(/testdata/empty_model.bin");
+  ReadOps("testdata/empty_model.bin");
   EXPECT_EQ(builtin_ops_.size(), 0);
   EXPECT_EQ(custom_ops_.size(), 0);
 }
 
 TEST_F(GenOpRegistrationTest, TestZeroSubgraphs) {
-  ReadOps(/testdata/0_subgraphs.bin");
+  ReadOps("testdata/0_subgraphs.bin");
   EXPECT_EQ(builtin_ops_.size(), 0);
   EXPECT_EQ(custom_ops_.size(), 0);
 }
 
 TEST_F(GenOpRegistrationTest, TestBrokenMmap) {
-  ReadOps(/testdata/test_model_broken.bin");
+  ReadOps("testdata/test_model_broken.bin");
   EXPECT_EQ(builtin_ops_.size(), 0);
   EXPECT_EQ(custom_ops_.size(), 0);
 }

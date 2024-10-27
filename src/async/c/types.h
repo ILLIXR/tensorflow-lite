@@ -13,7 +13,7 @@ limitations under the License.
 #define TENSORFLOW_LITE_ASYNC_C_TYPES_H_
 
 /// For documentation, see
-/// tensorflow/lite/core/async/c/types.h.
+/// core/async/c/types.h.
 
 #include "core/async/c/types.h"  // IWYU pragma: export
 

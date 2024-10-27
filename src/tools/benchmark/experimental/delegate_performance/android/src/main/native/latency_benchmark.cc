@@ -135,7 +135,7 @@ class DelegatePerformanceReportingListener : public BenchmarkListener {
 };
 
 // Converts the input TFLiteSettings into TFLite Benchmark Tool arguments.
-// Please see tensorflow/lite/tools/benchmark.
+// Please see tools/benchmark.
 std::vector<std::string> ParseArgumentsFromTfLiteSettings(
     const TFLiteSettings& tflite_settings,
     const std::string& tflite_settings_path) {

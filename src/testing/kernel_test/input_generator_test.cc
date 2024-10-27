@@ -30,14 +30,14 @@ namespace {
 TEST(InputGeneratorTest, LoadModel) {
   InputGenerator input_generator;
   ASSERT_EQ(input_generator.LoadModel(
-                /testdata/multi_add.bin"),
+                "testdata/multi_add.bin"),
             kTfLiteOk);
 }
 
 TEST(InputGeneratorTest, ReadWriteSimpleFile) {
   InputGenerator input_generator;
   ASSERT_EQ(
-      input_generator.ReadInputsFromFile(/testing/"
+      input_generator.ReadInputsFromFile("testing/"
                                          "kernel_test/testdata/test_input.csv"),
       kTfLiteOk);
 
@@ -62,7 +62,7 @@ TEST(InputGeneratorTest, ReadWriteSimpleFile) {
 TEST(InputGeneratorTest, GenerateUniformInput) {
   InputGenerator input_generator;
   ASSERT_EQ(input_generator.LoadModel(
-                /testdata/multi_add.bin"),
+                "testdata/multi_add.bin"),
             kTfLiteOk);
   input_generator.GenerateInput("UNIFORM");
   auto inputs = input_generator.GetInputs();
@@ -72,7 +72,7 @@ TEST(InputGeneratorTest, GenerateUniformInput) {
 TEST(InputGeneratorTest, GenerateGaussianInput) {
   InputGenerator input_generator;
   ASSERT_EQ(input_generator.LoadModel(
-                /testdata/multi_add.bin"),
+                "testdata/multi_add.bin"),
             kTfLiteOk);
   input_generator.GenerateInput("GAUSSIAN");
   auto inputs = input_generator.GetInputs();

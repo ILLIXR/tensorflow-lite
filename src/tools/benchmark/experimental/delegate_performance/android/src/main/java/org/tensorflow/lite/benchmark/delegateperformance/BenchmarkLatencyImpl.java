@@ -33,7 +33,7 @@ import tflite.proto.benchmark.DelegatePerformance.LatencyResults;
  *
  * <p>It performs latency benchmark tests via TFLite Benchmark Tool based on the input arguments.
  * Please check the test example in
- * tensorflow/lite/tools/benchmark/experimental/delegate_performance/android/README.md.
+ * tools/benchmark/experimental/delegate_performance/android/README.md.
  *
  * <p>Generates below list of files under delegate_performance_result/latency folder to describe the
  * benchmark results.

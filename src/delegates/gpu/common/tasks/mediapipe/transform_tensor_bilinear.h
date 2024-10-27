@@ -20,4 +20,3 @@ GPUOperation CreateTransformTensorBilinear(
 }  // namespace tflite
 
 #endif  // TENSORFLOW_LITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPETRANSFORM_TENSOR_BILINEAR_H_
-        
