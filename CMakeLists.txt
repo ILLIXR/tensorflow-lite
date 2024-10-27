@@ -30,6 +30,10 @@
 # for inclusion in ILLIXR. This was done to alleviate the issue of naming conflicts within
 # components.
 
+# 2024
+# Modified for use with ILLIXR hand tracking plugin
+# changed what components are built when ENABLE_GPU is set to ON to match Bazel build
+
 cmake_minimum_required(VERSION 3.16)
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Setting build type to Release, for debug builds use"
@@ -799,10 +803,6 @@ target_link_libraries(tensorflow-lite
                       ${CMAKE_DL_LIBS}
                       ${TFLITE_TARGET_DEPENDENCIES}
 )
-#get_cmake_property(_variableNames VARIABLES)
-#foreach (_variableName ${_variableNames})
-#    message(STATUS "${_variableName}=${${_variableName}}")
-#endforeach()
 
 if (NOT BUILD_SHARED_LIBS)
     list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DTFL_STATIC_LIBRARY_BUILD")
@@ -897,3 +897,5 @@ target_compile_options(_pywrap_tensorflow_interpreter_wrapper
                        PUBLIC ${TFLITE_TARGET_PUBLIC_OPTIONS}
                        PRIVATE ${TFLITE_TARGET_PRIVATE_OPTIONS}
 )
+
+message("Will be building ${LIBRARY_NAME}")
