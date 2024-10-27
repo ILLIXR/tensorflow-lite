@@ -79,7 +79,14 @@ option(TFLITE_ENABLE_GPU "Enable GPU" OFF)
 option(TFLITE_ENABLE_METAL "Enable Metal delegate (iOS only)" OFF)
 option(TFLITE_ENABLE_XNNPACK "Enable XNNPACK backend" ON)
 option(TFLITE_ENABLE_EXTERNAL_DELEGATE "Enable External Delegate backend" ON)
-
+option(LIBRARY_POSTFIX "Postfix for the library" "")
+if(LIBRARY_POSTFIX)
+    if(NOT ((LIBRARY_POSTFIX MATCHES "^-") OR (LIBRARY_POSTFIX MATCHES "^_")))
+        set(LIBRARY_POSTFIX "-${LIBRARY_POSTFIX}")
+    endif()
+else()
+    set(LIBRARY_POSTFIX "")
+endif()
 option(TFLITE_KERNEL_TEST "Enable tflite kernel unit test" OFF)
 option(BUILD_SHARED_LIBS "Build a shared library instead of a static one" OFF)
 if(TFLITE_KERNEL_TEST AND ${CMAKE_CROSSCOMPILING})
@@ -284,6 +291,8 @@ populate_tflite_source_vars("delegates" TFLITE_DELEGATES_SRCS)
 if(NOT TFLITE_KERNEL_TEST)
     list(FILTER TFLITE_C_SRCS EXCLUDE REGEX ".*c_api_for_testing\\.cc$")
 endif()
+if(TFLITE_ENABLE_GPU)
+    set(LIBRARY_POSTFIX "${LIBRARY_POSTFIX}-gpu")
     find_package(PkgConfig REQUIRED)
     find_package(OpenCLHeaders REQUIRED CONFIG)
     pkg_check_modules(vulkan REQUIRED vulkan)
@@ -761,31 +770,34 @@ set(_ALL_TFLITE_SRCS
     ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
 )
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(LIBRARY_NAME "tensorflow-lite${LIBRARY_POSTFIX}")
 if(BUILD_SHARED_LIBS)
-    add_library(tensorflow-lite SHARED
+    add_library(${LIBRARY_NAME} SHARED
                 ${_ALL_TFLITE_SRCS}
     )
 else()
-    add_library(tensorflow-lite STATIC
+    add_library(${LIBRARY_NAME} STATIC
                 ${_ALL_TFLITE_SRCS}
     )
 endif()
-add_dependencies(tensorflow-lite compiled_model_cc_fbs)
-target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
-#target_include_directories(tensorflow-lite PUBLIC ${fft2d_INCLUDE_DIRS})
+add_dependencies(${LIBRARY_NAME} main_fbs)
+if(TFL_ENABLE_GPU)
+    add_dependencies(${LIBRARY_NAME} gpu_fbs)
+endif()
 target_include_directories(${LIBRARY_NAME} PRIVATE
                            ${CMAKE_SOURCE_DIR}/src
                            ${CMAKE_SOURCE_DIR}/include
                            ${CMAKE_BINARY_DIR}/src
                            ${CMAKE_SOURCE_DIR}
 )
+#target_include_directories(${LIBRARY_NAME} PUBLIC ${fft2d_INCLUDE_DIRS})
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
-target_include_directories(tensorflow-lite
+target_include_directories(${LIBRARY_NAME}
                            PUBLIC $<BUILD_INTERFACE:${TENSORFLOW_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            #PRIVATE ${TENSORFLOW_ROOT_DIR}
 )
-target_link_libraries(tensorflow-lite
+target_link_libraries(${LIBRARY_NAME}
                       PUBLIC
                       Eigen3::Eigen
                       absl::flags
@@ -808,16 +820,16 @@ if (NOT BUILD_SHARED_LIBS)
     list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DTFL_STATIC_LIBRARY_BUILD")
 endif()
 
-target_compile_options(tensorflow-lite
+target_compile_options(${LIBRARY_NAME}
                        PUBLIC ${TFLITE_TARGET_PUBLIC_OPTIONS}
                        PRIVATE ${TFLITE_TARGET_PRIVATE_OPTIONS}
 )
-add_library(${PROJECT_NAME}::tensorflowlite ALIAS tensorflow-lite)
+add_library(${PROJECT_NAME}::tensorflowlite${LIBRARY_POSTFIX} ALIAS ${LIBRARY_NAME})
 
 # The install targets.
 if(TFLITE_ENABLE_INSTALL)
     install(
-            TARGETS tensorflow-lite
+            TARGETS ${LIBRARY_NAME}
             EXPORT ${PROJECT_NAME}Targets
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -849,12 +861,12 @@ if(TFLITE_ENABLE_INSTALL)
 
     configure_package_config_file(
             "src/tools/cmake/${PROJECT_NAME}Config.cmake.in"
-            "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-            INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+            "${PROJECT_BINARY_DIR}/${LIBRARY_NAME}Config.cmake"
+            INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
     )
 
-    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-            DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    install(FILES "${PROJECT_BINARY_DIR}/${LIBRARY_NAME}Config.cmake"
+            DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
     )
 endif()
 
@@ -890,7 +902,7 @@ target_include_directories(_pywrap_tensorflow_interpreter_wrapper
 )
 
 target_link_libraries(_pywrap_tensorflow_interpreter_wrapper
-                      tensorflow-lite
+                      ${LIBRARY_NAME}
                       ${CMAKE_DL_LIBS}
 )
 target_compile_options(_pywrap_tensorflow_interpreter_wrapper
