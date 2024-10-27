@@ -93,9 +93,9 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
     set(_TFLITE_ENABLE_RUY ON)
 endif()
 set(_TFLITE_ENABLE_NNAPI "${TFLITE_ENABLE_NNAPI}")
-if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
-    set(_TFLITE_ENABLE_NNAPI OFF)
-endif()
+#if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+#    set(_TFLITE_ENABLE_NNAPI OFF)
+#endif()
 set(_TFLITE_ENABLE_MMAP "${TFLITE_ENABLE_MMAP}")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # See https://github.com/tensorflow/tensorflow/blob/\
@@ -222,7 +222,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Android")
 endif()
 # Build a list of source files to compile into the TF Lite library.
 populate_tflite_source_vars("." TFLITE_SRCS)
-if(CMAKE_SYSTEM_NAME MATCHES "Windows" AND BUILD_SHARED_LIBS)
+if((CMAKE_SYSTEM_NAME MATCHES "Windows" AND BUILD_SHARED_LIBS) OR CMAKE_BUILD_TYPE MATCHES "Reslease")
     list(FILTER TFLITE_SRCS EXCLUDE REGEX ".*simple_memory_arena_debug_dump\\.cc$")
 endif()
 
@@ -257,10 +257,18 @@ populate_tflite_source_vars(
         "core/acceleration/configuration" TFLITE_CORE_ACCELERATION_SRCS
         FILTER "xnnpack_plugin.*"
         FILTER "(_test)\\.(cc|h)$"
+        FILTER "delegate_registry.*"
+        FILTER "nnapi_plugin.*"
+        FILTER "stable_delegate_registry.*"
 )
 populate_tflite_source_vars("core/api" TFLITE_CORE_API_SRCS)
 populate_tflite_source_vars("core/async" TFLITE_CORE_ASYNC_SRCS)
-populate_tflite_source_vars("core/async/c" TFLITE_CORE_ASYNC_C_SRCS)
+populate_tflite_source_vars(
+        "core/async/c" TFLITE_CORE_ASYNC_C_SRCS
+        FILTER "async_kernel.*"
+        FILTER "async_signature_runner.*"
+        FILTER "task.*"
+)
 populate_tflite_source_vars("core/async/interop" TFLITE_CORE_ASYNC_INTEROP_SRCS)
 populate_tflite_source_vars("core/async/interop/c" TFLITE_CORE_ASYNC_INTEROP_C_SRCS)
 populate_tflite_source_vars("core/c" TFLITE_CORE_C_SRCS)
@@ -269,8 +277,10 @@ populate_tflite_source_vars("core/kernels" TFLITE_CORE_KERNELS_SRCS)
 populate_tflite_source_vars("core/tools" TFLITE_CORE_TOOLS_SRCS)
 populate_tflite_source_vars("c" TFLITE_C_SRCS)
 populate_tflite_source_vars("delegates" TFLITE_DELEGATES_SRCS)
-if(TFLITE_ENABLE_GPU)
 
+if(NOT TFLITE_KERNEL_TEST)
+    list(FILTER TFLITE_C_SRCS EXCLUDE REGEX ".*c_api_for_testing\\.cc$")
+endif()
     find_package(PkgConfig REQUIRED)
     find_package(OpenCLHeaders REQUIRED CONFIG)
     pkg_check_modules(vulkan REQUIRED vulkan)
@@ -282,36 +292,51 @@ if(TFLITE_ENABLE_GPU)
     endif()
 
     add_custom_command(
-            OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common_generated.h
-            COMMAND flatbuffers::flatc --scoped-enums
+            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h
+            COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${TFLITE_SOURCE_DIR}/delegates/gpu/gl
+            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common.fbs
     )
     add_custom_command(
-            OUTPUT ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model_generated.h
+            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
+            COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
+            -I ${TENSORFLOW_SOURCE_DIR}
+            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/workgroups.fbs
+    )
+    add_custom_command(
+            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h
+            COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
+            -I ${TENSORFLOW_SOURCE_DIR}
+            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/metadata.fbs
+    )
+    add_custom_command(
+            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h
             COMMAND flatbuffers::flatc --scoped-enums
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${TFLITE_SOURCE_DIR}/delegates/gpu/gl
+            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model.fbs
     )
+
     add_custom_target(
-            compiled_model_cc_fbs
-            DEPENDS ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model_generated.h ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common_generated.h
+            gpu_fbs
+            DEPENDS ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h  ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
     )
 
-    populate_tflite_source_vars(
-            "delegates/gpu/cl" TFLITE_DELEGATES_GPU_CL_SRCS
-            FILTER "(_test|gl_interop|gpu_api_delegate|egl_sync)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/cl/default" TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/cl/kernels" TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/cl" TFLITE_DELEGATES_GPU_CL_SRCS
+    #        FILTER "(_test|gl_interop|gpu_api_delegate|egl_sync)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/cl/default" TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/cl/kernels" TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
     populate_tflite_source_vars(
             "delegates/gpu/common/google" TFLITE_DELEGATES_GPU_COMMON_GOOGLE_SRC
             FILTER "(_test)\\.(cc|h)$"
@@ -325,42 +350,42 @@ if(TFLITE_ENABLE_GPU)
             TFLITE_DELEGATES_GPU_COMMON_MEMORY_MANAGEMENT_SRCS
             FILTER "(_test)\\.(cc|h)$"
     )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/selectors" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/selectors/default" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/selectors/mediapipe" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/selectors" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/selectors/default" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/selectors/mediapipe" TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
     populate_tflite_source_vars(
             "delegates/gpu/common" TFLITE_DELEGATES_GPU_COMMON_SRCS
             FILTER "(_test)\\.(cc|h)$"
     )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/task"
-            TFLITE_DELEGATES_GPU_COMMON_TASK_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/tasks"
-            TFLITE_DELEGATES_GPU_COMMON_TASKS_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/tasks/mediapipe"
-            TFLITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPE_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
-    populate_tflite_source_vars(
-            "delegates/gpu/common/tasks/special"
-            TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS
-            FILTER "(_test)\\.(cc|h)$"
-    )
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/task"
+    #        TFLITE_DELEGATES_GPU_COMMON_TASK_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/tasks"
+    #        TFLITE_DELEGATES_GPU_COMMON_TASKS_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/tasks/mediapipe"
+    #        TFLITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPE_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
+    #populate_tflite_source_vars(
+    #        "delegates/gpu/common/tasks/special"
+    #        TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS
+    #        FILTER "(_test)\\.(cc|h)$"
+    #)
     populate_tflite_source_vars(
             "delegates/gpu/common/transformations"
             TFLITE_DELEGATES_GPU_COMMON_TRANSFORMATIONS_SRCS
@@ -377,34 +402,54 @@ if(TFLITE_ENABLE_GPU)
             FILTER "(_test)//(.cc|h)$"
     )
     populate_tflite_source_vars(
+            "delegates/gpu/gl/compiler"
+            TFLITE_DELEGATES_GPU_GL_COMPILER_SRC
+            FILTER "(_test)//(.cc|h)$"
+    )
+    populate_tflite_source_vars(
             "delegates/gpu/gl/converters"
             TFLITE_DELEGATES_GPU_GL_CONVERTERS_SRC
             FILTER "(_test)//(.cc|h)$"
     )
+    populate_tflite_source_vars(
+            "delegates/gpu/gl/kernels"
+            TFLITE_DELEGATES_GPU_GL_KERNELS_SRC
+            FILTER "(_test)//(.cc|h)$"
+    )
+    populate_tflite_source_vars(
+            "delegates/gpu/gl/workgroups"
+            TFLITE_DELEGATES_GPU_GL_WORKGROUPS_SRC
+            FILTER "(_test)//(.cc|h)$"
+    )
+
     list(APPEND TFLITE_DELEGATES_GPU_SRCS
          ${TFLITE_SOURCE_DIR}/delegates/gpu/api.cc
          ${TFLITE_SOURCE_DIR}/delegates/gpu/delegate.cc
          ${TFLITE_SOURCE_DIR}/delegates/gpu/delegate_options.cc
          ${TFLITE_SOURCE_DIR}/delegates/gpu/tflite_profile.cc
-         ${TFLITE_SOURCE_DIR}/experimental/acceleration/compatibility/android_info.cc
-         ${TFLITE_DELEGATES_GPU_CL_SRCS}
-         ${TFLITE_DELEGATES_GPU_GL_CONVERTERS_SRC}
-         ${TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS}
-         ${TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS}
+         ${TFLITE_SOURCE_DIR}/delegates/gpu/gl_delegate.cc
+         #${TFLITE_SOURCE_DIR}/experimental/acceleration/compatibility/android_info.cc
+         #${TFLITE_DELEGATES_GPU_CL_SRCS}
+         #${TFLITE_DELEGATES_GPU_CL_DEFAULT_SRCS}
+         #${TFLITE_DELEGATES_GPU_CL_KERNELS_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_GOOGLE_SRC}
          ${TFLITE_DELEGATES_GPU_COMMON_MEDIAPIPE_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_MEMORY_MANAGEMENT_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_DEFAULT_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_SELECTORS_MEDIAPIPE_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_TASK_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_TASKS_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPE_SRCS}
-         ${TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_TASK_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_TASKS_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_TASKS_MEDIAPIPE_SRCS}
+         #${TFLITE_DELEGATES_GPU_COMMON_TASKS_SPECIAL_SRCS}
          ${TFLITE_DELEGATES_GPU_COMMON_TRANSFORMATIONS_SRCS}
          ${TFLITE_DELEGATES_GPU_GL_KERNELS_MEDIAPIPE_SRC}
          ${TFLITE_DELEGATES_GPU_GL_SRC}
+         ${TFLITE_DELEGATES_GPU_GL_COMPILER_SRC}
+         ${TFLITE_DELEGATES_GPU_GL_CONVERTERS_SRC}
+         ${TFLITE_DELEGATES_GPU_GL_KERNELS_SRC}
+         ${TFLITE_DELEGATES_GPU_GL_WORKGROUPS_SRC}
          ${TFLITE_SOURCE_DIR}/tools/versioning/gpu_compatibility.cc
          ${TFLITE_SOURCE_DIR}/tools/versioning/op_signature.cc
     )
@@ -507,6 +552,44 @@ if(TFLITE_ENABLE_GPU)
          absl::flat_hash_map
     )
 endif()
+
+add_custom_command(
+        OUTPUT ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
+        COMMAND flatbuffers::flatc --gen-mutable --gen-object-api
+        -I ${TENSORFLOW_SOURCE_DIR}
+        -o ${CMAKE_BINARY_DIR}/src/schema
+        -c ${TFLITE_SOURCE_DIR}/schema/schema.fbs
+)
+add_custom_command(
+        OUTPUT ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h
+        COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
+        -I ${TENSORFLOW_SOURCE_DIR}
+        -o ${CMAKE_BINARY_DIR}/src/schema
+        -c ${TFLITE_SOURCE_DIR}/schema/conversion_metadata.fbs
+)
+add_custom_command(
+        OUTPUT ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h
+        COMMAND flatbuffers::flatc --proto
+        -o ${CMAKE_BINARY_DIR}/src/acceleration/configuration
+        ${CMAKE_SOURCE_DIR}/src/acceleration/configuration/configuration.proto
+        COMMAND sed -i 's/tflite\.proto/tflite/g' ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
+        COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api --gen-compare
+        -I ${TENSORFLOW_SOURCE_DIR}
+        -o ${CMAKE_BINARY_DIR}/src/acceleration/configuration
+        -c ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
+)
+add_custom_command(
+        OUTPUT ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h
+        COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
+        -I ${TENSORFLOW_SOURCE_DIR}
+        -o ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema
+        -c ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema.fbs
+)
+add_custom_target(
+        main_fbs
+        DEPENDS ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
+)
+
 if(_TFLITE_ENABLE_NNAPI)
     find_package(fp16_headers REQUIRED)
     populate_tflite_source_vars("delegates/nnapi"
@@ -514,12 +597,14 @@ if(_TFLITE_ENABLE_NNAPI)
                                 FILTER "(_test_list|_disabled)\\.(cc|h)$"
     )
     populate_tflite_source_vars(
-            "nnapi" TFLITE_NNAPI_SRCS FILTER "(_disabled)\\.(cc|h)$"
+            "nnapi" TFLITE_NNAPI_SRCS
+            FILTER "nnapi_handler.*"
+            FILTER "(_disabled)\\.(cc|h)$"
     )
 
-    list(APPEND TFLITE_NNAPI_SRCS
-         "${TFLITE_SOURCE_DIR}/nnapi/sl/SupportLibrary.cc"
-    )
+    #list(APPEND TFLITE_NNAPI_SRCS
+    #     "${TFLITE_SOURCE_DIR}/nnapi/sl/SupportLibrary.cc"
+    #)
 
     if(${TFLITE_ENABLE_NNAPI_VERBOSE_VALIDATION})
         list(APPEND TFLITE_TARGET_PUBLIC_OPTIONS "-DNNAPI_VERBOSE_VALIDATION")
@@ -599,7 +684,7 @@ populate_tflite_source_vars("kernels/internal/reference/sparse_ops"
 )
 populate_tflite_source_vars("kernels/internal/optimized/4bit"
                             TFLITE_KERNEL_INTERNAL_OPT_4BIT_SRCS
-                            FILTER "(.*neon.*|.*sse.*)\\.(cc|h)"
+                            FILTER "(.*neon.*)\\.(cc|h)"
 )
 populate_tflite_source_vars("kernels/internal/utils"
                             TFLITE_KERNEL_INTERNAL_UTILS_SRCS
@@ -668,10 +753,9 @@ set(_ALL_TFLITE_SRCS
     ${TFLITE_PROFILER_SRCS}
     ${TFLITE_SOURCE_DIR}/internal/signature_def.h
     ${TFLITE_SOURCE_DIR}/kernels/internal/utils/sparsity_format_converter.cc
-    ${TFLITE_SOURCE_DIR}/schema/conversion_metadata_generated.h
-    ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema_utils.cc
-    ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema_generated.h
-    ${TFLITE_SOURCE_DIR}/schema/schema_generated.h
+    ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h
+    ${TFLITE_SOURCE_DIR}/schema/schema_utils.cc
+    ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
 )
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(BUILD_SHARED_LIBS)
@@ -686,6 +770,12 @@ endif()
 add_dependencies(tensorflow-lite compiled_model_cc_fbs)
 target_include_directories(tensorflow-lite PRIVATE ${CMAKE_SOURCE_DIR}/src)
 #target_include_directories(tensorflow-lite PUBLIC ${fft2d_INCLUDE_DIRS})
+target_include_directories(${LIBRARY_NAME} PRIVATE
+                           ${CMAKE_SOURCE_DIR}/src
+                           ${CMAKE_SOURCE_DIR}/include
+                           ${CMAKE_BINARY_DIR}/src
+                           ${CMAKE_SOURCE_DIR}
+)
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
 target_include_directories(tensorflow-lite
