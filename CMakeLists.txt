@@ -631,7 +631,7 @@ else()
 endif()
 if(TFLITE_ENABLE_XNNPACK)
     find_package(fp16_headers REQUIRED)
-    find_package(tfl-XNNPACK REQUIRED CONFIG)
+    find_package(tfl-XNNPACK${LIBRARY_POSTFIX} REQUIRED CONFIG)
     populate_tflite_source_vars("delegates/xnnpack"
                                 TFLITE_DELEGATES_XNNPACK_SRCS
                                 FILTER ".*(_test|_tester)\\.(cc|h)"
