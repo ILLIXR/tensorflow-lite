@@ -781,7 +781,7 @@ else()
     )
 endif()
 add_dependencies(${LIBRARY_NAME} main_fbs)
-if(TFL_ENABLE_GPU)
+if(TFLITE_ENABLE_GPU)
     add_dependencies(${LIBRARY_NAME} gpu_fbs)
 endif()
 target_include_directories(${LIBRARY_NAME} PRIVATE
@@ -790,7 +790,7 @@ target_include_directories(${LIBRARY_NAME} PRIVATE
                            ${CMAKE_BINARY_DIR}/src
                            ${CMAKE_SOURCE_DIR}
 )
-#target_include_directories(${LIBRARY_NAME} PUBLIC ${fft2d_INCLUDE_DIRS})
+
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
 target_include_directories(${LIBRARY_NAME}
