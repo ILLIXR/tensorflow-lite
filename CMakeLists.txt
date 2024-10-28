@@ -840,6 +840,7 @@ if(TFLITE_ENABLE_INSTALL)
         file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
 
         string(REPLACE "src/" "" dir ${dir})
+        string(REGEX REPLACE ".*src/" "" dir ${dir})
         if(${dir} STREQUAL "src")
             set(dir "")
         endif()
