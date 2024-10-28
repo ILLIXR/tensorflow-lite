@@ -292,7 +292,7 @@ if(NOT TFLITE_KERNEL_TEST)
     list(FILTER TFLITE_C_SRCS EXCLUDE REGEX ".*c_api_for_testing\\.cc$")
 endif()
 if(TFLITE_ENABLE_GPU)
-    set(LIBRARY_POSTFIX "${LIBRARY_POSTFIX}-gpu")
+    set(TFLLIBRARY_POSTFIX "${LIBRARY_POSTFIX}-gpu")
     find_package(PkgConfig REQUIRED)
     find_package(OpenCLHeaders REQUIRED CONFIG)
     pkg_check_modules(vulkan REQUIRED vulkan)
@@ -631,7 +631,7 @@ else()
 endif()
 if(TFLITE_ENABLE_XNNPACK)
     find_package(fp16_headers REQUIRED)
-    find_package(tfl-XNNPACK REQUIRED CONFIG)
+    find_package(tfl-XNNPACK${LIBRARY_POSTFIX} REQUIRED CONFIG)
     populate_tflite_source_vars("delegates/xnnpack"
                                 TFLITE_DELEGATES_XNNPACK_SRCS
                                 FILTER ".*(_test|_tester)\\.(cc|h)"
@@ -770,7 +770,7 @@ set(_ALL_TFLITE_SRCS
     ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
 )
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(LIBRARY_NAME "tensorflow-lite${LIBRARY_POSTFIX}")
+set(LIBRARY_NAME "tensorflow-lite${TFLLIBRARY_POSTFIX}")
 if(BUILD_SHARED_LIBS)
     add_library(${LIBRARY_NAME} SHARED
                 ${_ALL_TFLITE_SRCS}
@@ -824,7 +824,7 @@ target_compile_options(${LIBRARY_NAME}
                        PUBLIC ${TFLITE_TARGET_PUBLIC_OPTIONS}
                        PRIVATE ${TFLITE_TARGET_PRIVATE_OPTIONS}
 )
-add_library(${PROJECT_NAME}::tensorflowlite${LIBRARY_POSTFIX} ALIAS ${LIBRARY_NAME})
+add_library(${PROJECT_NAME}::tensorflowlite${TFLLIBRARY_POSTFIX} ALIAS ${LIBRARY_NAME})
 
 # The install targets.
 if(TFLITE_ENABLE_INSTALL)
