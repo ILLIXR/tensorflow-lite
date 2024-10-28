@@ -830,7 +830,7 @@ add_library(${PROJECT_NAME}::tensorflowlite${TFLLIBRARY_POSTFIX} ALIAS ${LIBRARY
 if(TFLITE_ENABLE_INSTALL)
     install(
             TARGETS ${LIBRARY_NAME}
-            EXPORT ${PROJECT_NAME}Targets
+            EXPORT ${LIBRARY_NAME}Targets
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
@@ -850,9 +850,9 @@ if(TFLITE_ENABLE_INSTALL)
     endforeach()
 
     install(
-            EXPORT ${PROJECT_NAME}Targets
+            EXPORT ${LIBRARY_NAME}Targets
             NAMESPACE ${PROJECT_NAME}::
-            DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+            DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
     )
 
     # Generate config file that's used by find_package(tensorflow-lite CONFIG).
