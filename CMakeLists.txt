@@ -835,11 +835,18 @@ if(TFLITE_ENABLE_INSTALL)
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
-
+    file(GLOB_RECURSE GPU_HDRS
+         ${CMAKE_SOURCE_DIR}/src/delegates/gpu/common/*.h
+    )
+    list(APPEND _ALL_TFLITE_HDRS ${GPU_HDRS})
     foreach(hdr ${_ALL_TFLITE_HDRS})
         get_filename_component(dir ${hdr} DIRECTORY)
-        file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
-
+        string(FIND ${dir} ${CMAKE_BINARY_DIR} BD_FOUND)
+        if (${BD_FOUND} GREATER_EQUAL 0)
+            string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${dir})
+        else()
+            file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
+        endif()
         string(REPLACE "src/" "" dir ${dir})
         string(REGEX REPLACE ".*src/" "" dir ${dir})
         if(${dir} STREQUAL "src")
@@ -850,7 +857,6 @@ if(TFLITE_ENABLE_INSTALL)
                 DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/tensorflow/lite/${dir}"
         )
     endforeach()
-
     install(
             EXPORT ${LIBRARY_NAME}Targets
             NAMESPACE ${PROJECT_NAME}::
