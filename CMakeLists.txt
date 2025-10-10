@@ -45,6 +45,18 @@ endif()
 cmake_policy(SET CMP0028 NEW)
 # Enable MACOSX_RPATH (@rpath) for built dynamic libraries.
 cmake_policy(SET CMP0042 NEW)
+if (POLICY CMP0126)
+    cmake_policy(SET CMP0126 NEW)
+endif()
+
+if (POLICY CMP0156)
+    cmake_policy(SET CMP0156 NEW)
+endif()
+
+if (POLICY CMP0181)
+    cmake_policy(SET CMP0181 NEW)
+endif()
+
 project(tensorflow-lite C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
