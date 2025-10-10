@@ -317,37 +317,37 @@ if(TFLITE_ENABLE_GPU)
     endif()
 
     add_custom_command(
-            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h
             COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -o ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/common.fbs
     )
     add_custom_command(
-            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
             COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -o ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/workgroups.fbs
     )
     add_custom_command(
-            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h
             COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -o ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/metadata.fbs
     )
     add_custom_command(
-            OUTPUT ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h
             COMMAND flatbuffers::flatc --scoped-enums
             -I ${TENSORFLOW_SOURCE_DIR}
-            -o ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl
+            -o ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl
             -c ${TFLITE_SOURCE_DIR}/delegates/gpu/gl/compiled_model.fbs
     )
 
     add_custom_target(
             gpu_fbs
-            DEPENDS ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h  ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h ${CMAKE_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
+            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/compiled_model_generated.h ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/common_generated.h  ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/metadata_generated.h ${CMAKE_CURRENT_BINARY_DIR}/src/delegates/gpu/gl/workgroups_generated.h
     )
 
     #populate_tflite_source_vars(
@@ -579,40 +579,40 @@ if(TFLITE_ENABLE_GPU)
 endif()
 
 add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/schema/schema_generated.h
         COMMAND flatbuffers::flatc --gen-mutable --gen-object-api
         -I ${TENSORFLOW_SOURCE_DIR}
-        -o ${CMAKE_BINARY_DIR}/src/schema
+        -o ${CMAKE_CURRENT_BINARY_DIR}/src/schema
         -c ${TFLITE_SOURCE_DIR}/schema/schema.fbs
 )
 add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/schema/conversion_metadata_generated.h
         COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
         -I ${TENSORFLOW_SOURCE_DIR}
-        -o ${CMAKE_BINARY_DIR}/src/schema
+        -o ${CMAKE_CURRENT_BINARY_DIR}/src/schema
         -c ${TFLITE_SOURCE_DIR}/schema/conversion_metadata.fbs
 )
 add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h
         COMMAND flatbuffers::flatc --proto
-        -o ${CMAKE_BINARY_DIR}/src/acceleration/configuration
-        ${CMAKE_SOURCE_DIR}/src/acceleration/configuration/configuration.proto
-        COMMAND sed -i 's/tflite\.proto/tflite/g' ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
+        -o ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/acceleration/configuration/configuration.proto
+        COMMAND sed -i 's/tflite\.proto/tflite/g' ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
         COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api --gen-compare
         -I ${TENSORFLOW_SOURCE_DIR}
-        -o ${CMAKE_BINARY_DIR}/src/acceleration/configuration
-        -c ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
+        -o ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration
+        -c ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration/configuration.fbs
 )
 add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h
         COMMAND flatbuffers::flatc --no-union-value-namespacing --gen-object-api
         -I ${TENSORFLOW_SOURCE_DIR}
-        -o ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema
+        -o ${CMAKE_CURRENT_BINARY_DIR}/src/compiler/mlir/lite/schema
         -c ${TFLITE_SOURCE_DIR}/compiler/mlir/lite/schema/schema.fbs
 )
 add_custom_target(
         main_fbs
-        DEPENDS ${CMAKE_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h ${CMAKE_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/src/compiler/mlir/lite/schema/schema_generated.h ${CMAKE_CURRENT_BINARY_DIR}/src/acceleration/configuration/configuration_generated.h ${CMAKE_CURRENT_BINARY_DIR}/src/schema/conversion_metadata_generated.h ${CMAKE_CURRENT_BINARY_DIR}/src/schema/schema_generated.h
 )
 
 if(_TFLITE_ENABLE_NNAPI)
@@ -778,9 +778,9 @@ set(_ALL_TFLITE_SRCS
     ${TFLITE_PROFILER_SRCS}
     ${TFLITE_SOURCE_DIR}/internal/signature_def.h
     ${TFLITE_SOURCE_DIR}/kernels/internal/utils/sparsity_format_converter.cc
-    ${CMAKE_BINARY_DIR}/src/schema/conversion_metadata_generated.h
+    ${CMAKE_CURRENT_BINARY_DIR}/src/schema/conversion_metadata_generated.h
     ${TFLITE_SOURCE_DIR}/schema/schema_utils.cc
-    ${CMAKE_BINARY_DIR}/src/schema/schema_generated.h
+    ${CMAKE_CURRENT_BINARY_DIR}/src/schema/schema_generated.h
 )
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(LIBRARY_NAME "tensorflow-lite${TFLLIBRARY_POSTFIX}")
@@ -798,10 +798,10 @@ if(TFLITE_ENABLE_GPU)
     add_dependencies(${LIBRARY_NAME} gpu_fbs)
 endif()
 target_include_directories(${LIBRARY_NAME} PRIVATE
-                           ${CMAKE_SOURCE_DIR}/src
-                           ${CMAKE_SOURCE_DIR}/include
-                           ${CMAKE_BINARY_DIR}/src
-                           ${CMAKE_SOURCE_DIR}
+                           ${CMAKE_CURRENT_SOURCE_DIR}/src
+                           ${CMAKE_CURRENT_SOURCE_DIR}/include
+                           ${CMAKE_CURRENT_BINARY_DIR}/src
+                           ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
@@ -848,14 +848,14 @@ if(TFLITE_ENABLE_INSTALL)
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
     file(GLOB_RECURSE GPU_HDRS
-         ${CMAKE_SOURCE_DIR}/src/delegates/gpu/common/*.h
+         ${CMAKE_CURRENT_SOURCE_DIR}/src/delegates/gpu/common/*.h
     )
     list(APPEND _ALL_TFLITE_HDRS ${GPU_HDRS})
     foreach(hdr ${_ALL_TFLITE_HDRS})
         get_filename_component(dir ${hdr} DIRECTORY)
-        string(FIND ${dir} ${CMAKE_BINARY_DIR} BD_FOUND)
+        string(FIND ${dir} ${CMAKE_CURRENT_BINARY_DIR} BD_FOUND)
         if (${BD_FOUND} GREATER_EQUAL 0)
-            string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${dir})
+            string(REPLACE "${CMAKE_CURRENT_BINARY_DIR}/" "" dir ${dir})
         else()
             file(RELATIVE_PATH dir ${CMAKE_CURRENT_SOURCE_DIR} ${dir})
         endif()
