@@ -803,6 +803,12 @@ target_include_directories(${LIBRARY_NAME} PRIVATE
                            ${CMAKE_CURRENT_BINARY_DIR}/src
                            ${CMAKE_CURRENT_SOURCE_DIR}
 )
+if(TFLITE_ENABLE_XNNPACK)
+    target_include_directories(${LIBRARY_NAME} PRIVATE
+                               ${tfl-XNNPACK_SOURCE_DIR}/include
+                               ${tfl-XNNPACK_INCLUDE_DIR}
+    )
+endif()
 
 set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
 list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
