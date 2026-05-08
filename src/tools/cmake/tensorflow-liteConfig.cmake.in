@@ -13,6 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+@PACKAGE_INIT@
+
+# ---------------------------------------------------------------
+# FetchContent / add_subdirectory mode
+# ---------------------------------------------------------------
+if(TARGET tensorflow-lite@TFLLIBRARY_POSTFIX@)
+    if(NOT TARGET tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@)
+        # Use IMPORTED INTERFACE, not ALIAS.
+        # An ALIAS to a real target causes install(EXPORT) to require
+        # 'ruy' to be in an export set, which it never will be.
+        # An IMPORTED target is treated as external and exempt from that check.
+        add_library(tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@ INTERFACE IMPORTED GLOBAL)
+        set_target_properties(tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@ PROPERTIES
+            INTERFACE_LINK_LIBRARIES "$<BUILD_INTERFACE:tensorflow-lite@TFLLIBRARY_POSTFIX@>"
+        )
+    endif()
+    set(tensorflow-lite@TFLLIBRARY_POSTFIX@_FOUND TRUE)
+    set(tensorflow-lite@TFLLIBRARY_POSTFIX@_LIBRARIES tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@)
+
+    get_target_property(_tfl_inc tensorflow-lite@TFLLIBRARY_POSTFIX@ INTERFACE_INCLUDE_DIRECTORIES)
+    set(tensorflow-lite@TFLLIBRARY_POSTFIX@_INCLUDE_DIRS "${_tfl_inc}")
+
+    return()
+endif()
+
+# ---------------------------------------------------------------
+# Installed-package mode
+# ---------------------------------------------------------------
+
 include(CMakeFindDependencyMacro)
 
 find_dependency(absl)
@@ -30,7 +59,5 @@ if(NOT cpuinfo_FOUND)
 endif()
 find_dependency(ruy)
 find_dependency(gemmlowp)
-
-@PACKAGE_INIT@
 
 include("${CMAKE_CURRENT_LIST_DIR}/@LIBRARY_NAME@Targets.cmake")
