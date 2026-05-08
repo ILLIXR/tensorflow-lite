@@ -802,6 +802,7 @@ target_include_directories(${LIBRARY_NAME} PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}/include
                            ${CMAKE_CURRENT_BINARY_DIR}/src
                            ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${fft2d_SOURCE_DIR}
 )
 if(TFLITE_ENABLE_XNNPACK)
     target_include_directories(${LIBRARY_NAME} PRIVATE
