@@ -807,7 +807,7 @@ target_include_directories(${LIBRARY_NAME} PRIVATE
 if(TFLITE_ENABLE_XNNPACK)
     target_include_directories(${LIBRARY_NAME} PRIVATE
                                ${tfl-XNNPACK_SOURCE_DIR}/include
-                               ${tfl-XNNPACK_INCLUDE_DIR}
+                               ${tfl-XNNPACK_INCLUDE_DIRS}
     )
 endif()
 
