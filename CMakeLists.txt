@@ -888,7 +888,7 @@ if(TFLITE_ENABLE_INSTALL)
 
     configure_package_config_file(
             "src/tools/cmake/${PROJECT_NAME}Config.cmake.in"
-            "${PROJECT_BINARY_DIR}/${LIBRARY_NAME}${TFLLIBRARY_POSTFIX}Config.cmake"
+            "${PROJECT_BINARY_DIR}/${LIBRARY_NAME}Config.cmake"
             INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
     )
 
