@@ -886,6 +886,22 @@ if(TFLITE_ENABLE_INSTALL)
 
     include(CMakePackageConfigHelpers)
 
+    # Headers live in ${TFLITE_SOURCE_DIR}/ but are installed as
+    # tensorflow/lite/*.  Create a staging tree with a symlink so that
+    # #include "tensorflow/lite/interpreter.h" resolves correctly at
+    # build time without copying files.
+    set(_tflite_build_include "${CMAKE_CURRENT_BINARY_DIR}/tflite_src_include")
+    file(MAKE_DIRECTORY "${_tflite_build_include}/tensorflow")
+    file(CREATE_LINK "${TFLITE_SOURCE_DIR}"
+         "${_tflite_build_include}/tensorflow/lite"
+         SYMBOLIC)
+
+    set(_tflite_generated_include "${CMAKE_CURRENT_BINARY_DIR}/tflite_build_include")
+    file(MAKE_DIRECTORY "${_tflite_generated_include}/tensorflow")
+    file(CREATE_LINK "${CMAKE_CURRENT_BINARY_DIR}/src"
+         "${_tflite_generated_include}/tensorflow/lite"
+         SYMBOLIC)
+
     configure_package_config_file(
             "src/tools/cmake/${PROJECT_NAME}Config.cmake.in"
             "${PROJECT_BINARY_DIR}/${LIBRARY_NAME}Config.cmake"

@@ -26,13 +26,14 @@ if(TARGET tensorflow-lite@TFLLIBRARY_POSTFIX@)
         add_library(tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@ INTERFACE IMPORTED GLOBAL)
         set_target_properties(tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@ PROPERTIES
             INTERFACE_LINK_LIBRARIES "$<BUILD_INTERFACE:tensorflow-lite@TFLLIBRARY_POSTFIX@>"
+            INTERFACE_INCLUDE_DIRECTORIES "@_tflite_build_include@;@_tflite_build_include@/tensorflow/lite;@CMAKE_CURRENT_BINARY_DIR@/src;@_tflite_generated_include@"
         )
     endif()
     set(tensorflow-lite@TFLLIBRARY_POSTFIX@_FOUND TRUE)
     set(tensorflow-lite@TFLLIBRARY_POSTFIX@_LIBRARIES tensorflow-lite::tensorflow-lite@TFLLIBRARY_POSTFIX@ CACHE STRING "" FORCE)
 
     get_target_property(_tfl_inc tensorflow-lite@TFLLIBRARY_POSTFIX@ INTERFACE_INCLUDE_DIRECTORIES)
-    set(tensorflow-lite@TFLLIBRARY_POSTFIX@_INCLUDE_DIRS "${_tfl_inc}" CACHE PATH "" FORCE)
+    set(tensorflow-lite@TFLLIBRARY_POSTFIX@_INCLUDE_DIRS "${_tfl_inc};@_tflite_build_include@" CACHE PATH "" FORCE)
 
     return()
 endif()
